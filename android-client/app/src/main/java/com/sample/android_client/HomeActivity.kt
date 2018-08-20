@@ -9,19 +9,19 @@ class HomeActivity : AppCompatActivity() {
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
+            R.id.navigation_friends -> {
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout_main, FriendsFragment())
                         .commit()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_dashboard -> {
+            R.id.navigation_latest_messages -> {
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout_main, LatestMessagesFragment())
                         .commit()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
+            R.id.navigation_settings -> {
                 supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout_main, SettingsFragment())
                         .commit()

@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+// Groupieを使えるようにするための設定
+androidExtensions {
+    experimental = true
+}
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -31,4 +37,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    // Groupieのインストール
+    implementation 'com.xwray:groupie:2.1.0'
+    implementation 'com.xwray:groupie-kotlin-android-extensions:2.1.0'
 }
