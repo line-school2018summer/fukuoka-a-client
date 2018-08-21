@@ -11,6 +11,7 @@ import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.abc_search_view.*
 import kotlinx.android.synthetic.main.fragment_friends.*
 import java.util.*
 
@@ -23,6 +24,15 @@ class FriendsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         displayGroupsAndFriends()
+
+        search_friends_button_friends.setOnClickListener {
+            val text = search_friends_edittext_friends.text.toString()
+            Log.d("FriendsFragment", "文字列${text}を含むユーザーを検索する")
+            // TODO: 文字列textを含むユーザーを検索してリストアップする処理を書く
+            // アクティビティを分けて、そっちに遷移するようにするのが楽そうだけど
+            // このページ内でシュッっと画面が切り替わるようにしたほうがかっこいい
+            // 文字を入力するたびリアルタイムで検索していくとかもかっこいいけど難しそう
+        }
     }
 
     private fun displayGroupsAndFriends() {
