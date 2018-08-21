@@ -6,7 +6,7 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.item_expandable_header_friends.view.*
 
-class ExpandableHeaderItem(private val title: String) : Item<ViewHolder>(), ExpandableItem {
+data class ExpandableHeaderItem(private val title: String) : Item<ViewHolder>(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
 
     override fun getLayout(): Int = R.layout.item_expandable_header_friends

@@ -3,6 +3,7 @@ package com.sample.android_client
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,11 @@ class FriendsFragment : Fragment() {
         ExpandableGroup(ExpandableHeaderItem("All your friends"), true).apply {
             add(Section(allFriends))
             groupAdapter.add(this)
+        }
+
+        groupAdapter.setOnItemClickListener { item, view ->
+            Log.d("FriendsFragment", item.toString())
+            // TODO: 選択したユーザとのトーク画面に遷移
         }
 
     }
