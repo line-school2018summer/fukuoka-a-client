@@ -51,11 +51,11 @@ class MessageRecyclerViewAdaper(private val messageList: MutableList<Message<Str
 
     open inner class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val message: TextView = view.findViewById(R.id.message_text)
-        private val sentTime: TextView = view.findViewById(R.id.sent_time)
+        private val sendTime: TextView = view.findViewById(R.id.send_time)
 
         open fun bind(position: Int) {
             message.text = messages[position].body
-            sentTime.text = messages[position].sendTime.format(DateTimeFormatter.ofPattern("HH:MM"))
+            sendTime.text = messages[position].sendTime.format(DateTimeFormatter.ofPattern("HH:MM"))
         }
     }
 
