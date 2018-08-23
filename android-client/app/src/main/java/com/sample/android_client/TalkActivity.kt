@@ -13,7 +13,7 @@ class TalkActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
-        val messages = mutableListOf<Message<String>>()
+        val messages = mutableListOf<Message>()
         messages.add(Message(1, 1, "Test1", LocalDateTime.now()))
         messages.add(Message(2, 2, "Test1", LocalDateTime.now()))
 

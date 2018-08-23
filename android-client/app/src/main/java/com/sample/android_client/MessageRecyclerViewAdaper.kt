@@ -8,10 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import java.time.format.DateTimeFormatter
 
-class MessageRecyclerViewAdaper(private val messageList: MutableList<Message<String>>)
+class MessageRecyclerViewAdaper(private val messageList: MutableList<Message>)
     : RecyclerView.Adapter<MessageRecyclerViewAdaper.BaseViewHolder>() {
 
-    private val messages: MutableList<Message<String>> = messageList
+    private val messages: MutableList<Message> = messageList
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.bind(position)
