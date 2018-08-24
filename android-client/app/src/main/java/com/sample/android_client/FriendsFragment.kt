@@ -59,17 +59,17 @@ class FriendsFragment : Fragment() {
         }
 
 
-        ExpandableGroup(ExpandableHeaderItem("Group1"), true).apply {
+        ExpandableGroup(ExpandableHeaderItem(1, "Group1", ""), true).apply {
             add(Section(group1))
             groupAdapter.add(this)
         }
 
-        ExpandableGroup(ExpandableHeaderItem("Group2"), true).apply {
+        ExpandableGroup(ExpandableHeaderItem(2, "Group2", ""), true).apply {
             add(Section(group2))
             groupAdapter.add(this)
         }
 
-        ExpandableGroup(ExpandableHeaderItem("友だち"), true).apply {
+        ExpandableGroup(ExpandableHeaderItem(0, "友だち", ""), true).apply {
             add(Section(allFriends))
             groupAdapter.add(this)
         }

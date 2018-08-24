@@ -1,6 +1,7 @@
 package com.sample.android_client
 
 import android.util.Log
+import android.view.View
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
 import com.xwray.groupie.kotlinandroidextensions.Item
@@ -8,7 +9,10 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_expandable_header_friends.*
 import kotlinx.android.synthetic.main.item_expandable_header_friends.view.*
 
-data class ExpandableHeaderItem(private val groupName: String) : Item(), ExpandableItem {
+data class ExpandableHeaderItem(private val groupId: Long,
+                                private val groupName: String,
+                                private val groupIconURL: String
+                                ) : Item(), ExpandableItem {
     private lateinit var expandableGroup: ExpandableGroup
 
     override fun getLayout(): Int = R.layout.item_expandable_header_friends
@@ -18,6 +22,7 @@ data class ExpandableHeaderItem(private val groupName: String) : Item(), Expanda
 
         if (groupName == "友だち") {
             viewHolder.group_icon_imageview_expandable_header_item.setImageResource(R.drawable.ic_people_black_24dp)
+            viewHolder.jump_talk_button_expandable_header_item.visibility = View.INVISIBLE
         }
         else {
             // TODO: グループのアイコンを表示させる
@@ -25,12 +30,12 @@ data class ExpandableHeaderItem(private val groupName: String) : Item(), Expanda
 
         viewHolder.expand_icon_imageview_expandable_header_item.setImageResource(getRotatedIconResId())
 
-        viewHolder.expand_icon_imageview_expandable_header_item.setOnClickListener {
+        viewHolder.item_expandable_header_root_friends.setOnClickListener {
             expandableGroup.onToggleExpanded()
             viewHolder.itemView.expand_icon_imageview_expandable_header_item.setImageResource(getRotatedIconResId())
         }
 
-        viewHolder.item_expandable_header_root_friends.setOnClickListener {
+        viewHolder.jump_talk_button_expandable_header_item.setOnClickListener {
             Log.d("FriendsFragment", "グループ名${groupName}のトーク画面に遷移")
         }
     }
