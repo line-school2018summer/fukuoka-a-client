@@ -17,7 +17,7 @@ class TalkActivity : Activity() {
         messages.add(Message(1, 1, "Test1", LocalDateTime.now()))
         messages.add(Message(2, 2, "Test1", LocalDateTime.now()))
 
-        talk_recycler_view.adapter = MessageRecyclerViewAdaper(messages)
+        talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 
