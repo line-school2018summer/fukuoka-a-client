@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/sender_icon"
         android:background="#00FF00"
+        android:maxWidth="300dp"
         android:paddingLeft="3dp"
         android:paddingRight="5dp"
         android:text="message"
