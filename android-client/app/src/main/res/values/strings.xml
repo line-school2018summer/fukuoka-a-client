@@ -3,4 +3,5 @@
     <string name="title_friends">友だち</string>
     <string name="title_latest_messages">最新メッセージ</string>
     <string name="title_settings">設定</string>
+    <string name="title_activity_talk">TalkActivity</string>
 </resources>
