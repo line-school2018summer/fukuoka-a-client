@@ -25,6 +25,9 @@ class TalkActivity : Activity() {
             val message = input_message_box_talk.text.toString()
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
+
+            // 入力ボックスを空にする
+            input_message_box_talk.text.clear()
         }
     }
 
