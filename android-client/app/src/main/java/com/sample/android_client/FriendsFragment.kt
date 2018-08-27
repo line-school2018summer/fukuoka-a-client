@@ -47,9 +47,8 @@ class FriendsFragment : Fragment() {
     }
 
     private fun displayGroupsAndFriends() {
-        val group1 = generateDummyFriendsItems(3)
-        val group2 = generateDummyFriendsItems(9)
-        val allFriends = generateDummyFriendsItems(18)
+        val groups = generateDummyGroupsItems(3)
+        val friends = generateDummyFriendsItems(18)
 
         recycler_view_friends.apply {
             layoutManager = GridLayoutManager(activity, groupAdapter.spanCount).apply {
@@ -58,38 +57,38 @@ class FriendsFragment : Fragment() {
             adapter = groupAdapter
         }
 
-
-        ExpandableGroup(ExpandableHeaderItem(1, "Group1", ""), true).apply {
-            add(Section(group1))
+        ExpandableGroup(ExpandableHeaderItem("グループトーク"), true).apply {
+            add(Section(groups))
             groupAdapter.add(this)
         }
 
-        ExpandableGroup(ExpandableHeaderItem(2, "Group2", ""), true).apply {
-            add(Section(group2))
+        ExpandableGroup(ExpandableHeaderItem("個人間トーク"), true).apply {
+            add(Section(friends))
             groupAdapter.add(this)
         }
-
-        ExpandableGroup(ExpandableHeaderItem(0, "友だち", ""), true).apply {
-            add(Section(allFriends))
-            groupAdapter.add(this)
-        }
-
-
 
         Log.d("FriendsFragment", groupAdapter.getItem(0).toString())
 
         groupAdapter.setOnItemClickListener { item, view ->
             Log.d("FriendsFragment", item.toString())
-            // TODO: 選択したユーザとのトーク画面に遷移
+            // TODO: 選択したルームでのトークに遷移する
         }
 
     }
 
-    // ダミーの友だちリストを作成
-    private fun generateDummyFriendsItems(number: Int): MutableList<FriendItem> {
+    // ダミーのグループリストを作成
+    private fun generateDummyGroupsItems(number: Int): MutableList<RoomItem> {
         val rnd = Random()
         return MutableList(number) {
-            FriendItem("user" + rnd.nextInt(256).toString(), "hoge")
+            RoomItem(0,"group" + rnd.nextInt(256).toString(), "hoge")
+        }
+    }
+
+    // ダミーの友だちリストを作成
+    private fun generateDummyFriendsItems(number: Int): MutableList<RoomItem> {
+        val rnd = Random()
+        return MutableList(number) {
+            RoomItem(0,"user" + rnd.nextInt(256).toString(), "hoge")
         }
     }
 }
