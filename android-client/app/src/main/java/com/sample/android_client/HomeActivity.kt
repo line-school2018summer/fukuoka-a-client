@@ -38,7 +38,7 @@ class HomeActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         supportFragmentManager.beginTransaction()
-                .replace(R.id.frame_layout_main, LatestMessagesFragment())
+                .replace(R.id.frame_layout_main, FriendsFragment())
                 .commit()
 
     }
