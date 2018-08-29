@@ -19,7 +19,11 @@
         <activity
             android:name=".TalkActivity"
             android:label="@string/title_activity_talk" />
-        <activity android:name=".AddFriendsActivity"></activity>
+        <activity android:name=".AddFriendsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity"/>
+        </activity>
     </application>
 
 </manifest>
