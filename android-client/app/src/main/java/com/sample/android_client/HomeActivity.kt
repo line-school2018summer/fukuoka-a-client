@@ -3,6 +3,7 @@ package com.sample.android_client
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.view.Menu
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -41,5 +42,10 @@ class HomeActivity : AppCompatActivity() {
                 .replace(R.id.frame_layout_main, FriendsFragment())
                 .commit()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_friends, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }
