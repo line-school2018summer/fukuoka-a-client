@@ -1,15 +1,13 @@
 package com.sample.android_client
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_add_friends.*
-import kotlinx.android.synthetic.main.fragment_friends.*
-import java.util.*
 
 class AddFriendsActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
@@ -25,32 +23,61 @@ class AddFriendsActivity : AppCompatActivity() {
         supportActionBar?.title = "友だちを検索"
 
         search_button_add_friends.setOnClickListener {
-            val pattern = search_box_add_friends.text.toString()
-            Log.d("AddFriendsActivity", "文字列${pattern}が含まれるユーザを検索")
-            displaySearchedUsers()
+            val keyword = search_box_add_friends.text.toString()
+            Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
+            displaySearchedUsers(keyword)
         }
     }
 
-    private fun displaySearchedUsers() {
+    private fun fetchSearchedUsers(keyword: String): MutableList<RoomItem> {
+        val allUsers = fetchAllUsers()
+        val searchedUsers = mutableListOf<RoomItem>()
+
+        for (user in allUsers) {
+            if (user.roomName.indexOf(keyword) >= 0) {
+                searchedUsers.add(user)
+            }
+        }
+
+        return searchedUsers
+    }
+
+    private fun fetchAllUsers(): MutableList<RoomItem> {
+        // とりあえずダミーでユーザ全体のリストを作っている
+        // TODO: データベースに登録されているユーザ全体を取ってくる処理を書く
+        val allUsers = generateDummyUsersItems()
+        return allUsers
+    }
+
+    private fun displaySearchedUsers(keyword: String) {
         recycler_view_add_friends.apply {
             layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
                 spanSizeLookup = groupAdapter.spanSizeLookup
             }
             adapter = groupAdapter
         }
+        groupAdapter.clear()
 
         val section = Section()
 
         section.removeHeader()
-        section.addAll(generateDummyUsersItems(12))
+
+        val items = fetchSearchedUsers(keyword)
+        section.addAll(items)
 
         groupAdapter.add(section)
     }
 
-    private fun generateDummyUsersItems(number: Int): MutableList<RoomItem> {
-        val rnd = Random()
-        return MutableList(number) {
-            RoomItem(0,"user" + rnd.nextInt(256).toString(), "hoge")
-        }
+    private fun generateDummyUsersItems(): MutableList<RoomItem> {
+        val dummyUsersItems = mutableListOf<RoomItem>()
+
+        dummyUsersItems.add(RoomItem(0, "saito yuya", ""))
+        dummyUsersItems.add(RoomItem(0, "suzuki yuto", ""))
+        dummyUsersItems.add(RoomItem(0, "suzuki takuma", ""))
+        dummyUsersItems.add(RoomItem(0, "honda keisuke", ""))
+        dummyUsersItems.add(RoomItem(0, "kawasaki tomoya", ""))
+        dummyUsersItems.add(RoomItem(0, "yamaha tarou", ""))
+
+        return dummyUsersItems
     }
 }
