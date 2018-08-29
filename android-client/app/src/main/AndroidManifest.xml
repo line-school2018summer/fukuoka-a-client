@@ -18,7 +18,8 @@
         </activity>
         <activity
             android:name=".TalkActivity"
-            android:label="@string/title_activity_talk"></activity>
+            android:label="@string/title_activity_talk" />
+        <activity android:name=".AddFriendsActivity"></activity>
     </application>
 
 </manifest>
