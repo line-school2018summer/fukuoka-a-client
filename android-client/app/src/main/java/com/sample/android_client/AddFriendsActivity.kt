@@ -22,6 +22,9 @@ class AddFriendsActivity : AppCompatActivity() {
 
         supportActionBar?.title = "友だちを検索"
 
+        // 最初は全ユーザを表示するようにする
+        displaySearchedUsers("")
+
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
