@@ -20,7 +20,7 @@ class AddFriendsActivity : AppCompatActivity() {
 
         recycler_view_add_friends.adapter = groupAdapter
 
-        supportActionBar?.title = "友だちを検索"
+        supportActionBar?.title = "友だちを追加"
 
         // 最初は全ユーザを表示するようにする
         displaySearchedUsers("")
