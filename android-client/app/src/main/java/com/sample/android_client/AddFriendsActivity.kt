@@ -14,6 +14,7 @@ class AddFriendsActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
+    val selectedUser = mutableListOf<RoomItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,16 @@ class AddFriendsActivity : AppCompatActivity() {
             // TODO: 選んだユーザを友だちに追加する処理
             Toast.makeText(this, "友だちに追加しました！", Toast.LENGTH_SHORT).show()
             finish()
+        }
+
+        groupAdapter.setOnItemClickListener { item, view ->
+            if (selectedUser.contains(item)) {
+                selectedUser.remove(item)
+                view.alpha = 0.5f
+            } else {
+                selectedUser.add(item as RoomItem)
+                view.alpha = 1f
+            }
         }
     }
 
@@ -67,6 +78,7 @@ class AddFriendsActivity : AppCompatActivity() {
             adapter = groupAdapter
         }
         groupAdapter.clear()
+        selectedUser.clear()
 
         val section = Section()
 
