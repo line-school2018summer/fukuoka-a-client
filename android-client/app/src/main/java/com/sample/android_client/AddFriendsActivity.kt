@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_add_friends.*
 
@@ -80,14 +79,9 @@ class AddFriendsActivity : AppCompatActivity() {
         groupAdapter.clear()
         selectedUser.clear()
 
-        val section = Section()
-
-        section.removeHeader()
-
         val items = fetchSearchedUsers(keyword)
-        section.addAll(items)
 
-        groupAdapter.add(section)
+        groupAdapter.addAll(items)
     }
 
     private fun generateDummyUsersItems(): MutableList<RoomItem> {
