@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/search_box_add_friends" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/add_friends_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

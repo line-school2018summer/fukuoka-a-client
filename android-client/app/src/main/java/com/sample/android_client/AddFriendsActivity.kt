@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
+import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
@@ -29,6 +30,12 @@ class AddFriendsActivity : AppCompatActivity() {
             val keyword = search_box_add_friends.text.toString()
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
             displaySearchedUsers(keyword)
+        }
+
+        add_friends_fab.setOnClickListener {
+            // TODO: 選んだユーザを友だちに追加する処理
+            Toast.makeText(this, "友だちに追加しました！", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
