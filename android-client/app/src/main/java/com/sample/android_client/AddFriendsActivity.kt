@@ -7,13 +7,15 @@ import android.util.Log
 import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.activity_add_friends.*
+import kotlinx.android.synthetic.main.item_friend_friends.*
 
 class AddFriendsActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
-    val selectedUser = mutableListOf<RoomItem>()
+    val selectedUser = mutableListOf<SelectableUserItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,23 +45,27 @@ class AddFriendsActivity : AppCompatActivity() {
             finish()
         }
 
+        /*
         groupAdapter.setOnItemClickListener { item, view ->
-            if (selectedUser.contains(item)) {
-                selectedUser.remove(item)
-                view.alpha = 0.5f
+            val sItem = item as SelectableUserItem
+            if (sItem.isSelected) {
+                selectedUser.remove(sItem)
+                sItem.isSelected = false
             } else {
-                selectedUser.add(item as RoomItem)
-                view.alpha = 1f
+                selectedUser.add(sItem)
+                sItem.isSelected = true
             }
         }
+        */
+
     }
 
-    private fun fetchSearchedUsers(keyword: String): MutableList<RoomItem> {
+    private fun fetchSearchedUsers(keyword: String): MutableList<SelectableUserItem> {
         val allUsers = fetchAllUsers()
-        val searchedUsers = mutableListOf<RoomItem>()
+        val searchedUsers = mutableListOf<SelectableUserItem>()
 
         for (user in allUsers) {
-            if (user.roomName.indexOf(keyword) >= 0) {
+            if (user.userName.indexOf(keyword) >= 0) {
                 searchedUsers.add(user)
             }
         }
@@ -67,7 +73,7 @@ class AddFriendsActivity : AppCompatActivity() {
         return searchedUsers
     }
 
-    private fun fetchAllUsers(): MutableList<RoomItem> {
+    private fun fetchAllUsers(): MutableList<SelectableUserItem> {
         // とりあえずダミーでユーザ全体のリストを作っている
         // TODO: データベースに登録されているユーザ全体を取ってくる処理を書く
         val allUsers = generateDummyUsersItems()
@@ -83,16 +89,52 @@ class AddFriendsActivity : AppCompatActivity() {
         groupAdapter.addAll(items)
     }
 
-    private fun generateDummyUsersItems(): MutableList<RoomItem> {
-        val dummyUsersItems = mutableListOf<RoomItem>()
+    private fun generateDummyUsersItems(): MutableList<SelectableUserItem> {
+        val dummyUsersItems = mutableListOf<SelectableUserItem>()
 
-        dummyUsersItems.add(RoomItem(0, "saito yuya", ""))
-        dummyUsersItems.add(RoomItem(0, "suzuki yuto", ""))
-        dummyUsersItems.add(RoomItem(0, "suzuki takuma", ""))
-        dummyUsersItems.add(RoomItem(0, "honda keisuke", ""))
-        dummyUsersItems.add(RoomItem(0, "kawasaki tomoya", ""))
-        dummyUsersItems.add(RoomItem(0, "yamaha tarou", ""))
+        dummyUsersItems.add(SelectableUserItem(0, "saito yuya", "", false))
+        dummyUsersItems.add(SelectableUserItem(0, "suzuki yuto", "", false))
+        dummyUsersItems.add(SelectableUserItem(0, "suzuki takuma", "", false))
+        dummyUsersItems.add(SelectableUserItem(0, "honda keisuke", "", false))
+        dummyUsersItems.add(SelectableUserItem(0, "kawasaki tomoya", "", false))
+        dummyUsersItems.add(SelectableUserItem(0, "yamaha tarou", "", false))
 
         return dummyUsersItems
+    }
+
+    inner class SelectableUserItem(val userId: Long,
+                                   val userName: String,
+                                   val userIconURI: String,
+                                   var isSelected: Boolean) : Item() {
+        override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
+            viewHolder.user_name_textview_friends.text = userName
+            viewHolder.itemView.alpha = if (isSelected) 1f else 0.5f
+
+            viewHolder.itemView.setOnClickListener {
+                if (isSelected) {
+                    selectedUser.remove(this)
+                    isSelected = false
+                    viewHolder.itemView.alpha = 0.5f
+                } else {
+                    selectedUser.add(this)
+                    isSelected = true
+                    viewHolder.itemView.alpha = 1f
+                }
+
+                // デバッグ用
+                Log.d("AddFriendsActivity", selectedUser.toString())
+            }
+
+            // TODO : 友だちのアイコンを表示する
+        }
+
+        override fun getLayout(): Int = R.layout.item_friend_friends
+
+        override fun getSpanSize(spanCount: Int, position: Int): Int = spanCount / 4
+
+        // デバッグ用
+        override fun toString(): String {
+            return userName
+        }
     }
 }
