@@ -19,7 +19,12 @@ class AddFriendsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
 
-        recycler_view_add_friends.adapter = groupAdapter
+        recycler_view_add_friends.apply {
+            layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
+                spanSizeLookup = groupAdapter.spanSizeLookup
+            }
+            adapter = groupAdapter
+        }
 
         supportActionBar?.title = "友だちを追加"
 
@@ -70,12 +75,6 @@ class AddFriendsActivity : AppCompatActivity() {
     }
 
     private fun displaySearchedUsers(keyword: String) {
-        recycler_view_add_friends.apply {
-            layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
-                spanSizeLookup = groupAdapter.spanSizeLookup
-            }
-            adapter = groupAdapter
-        }
         groupAdapter.clear()
         selectedUser.clear()
 
