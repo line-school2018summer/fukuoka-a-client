@@ -3,9 +3,9 @@ package com.sample.android_client
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -16,7 +16,8 @@ import java.util.*
 
 class RegistrationActivity : AppCompatActivity() {
 
-    var selectedPhotoUri: Uri? = null
+    var selectedPhotoUri: Uri? = null   // アイコンにするために選択した画像のURI
+    var userUID: String? = null         // Firebaseで発行されるUID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +74,7 @@ class RegistrationActivity : AppCompatActivity() {
 
                     // ユーザ登録に成功した場合
                     Log.d("RegisterActivity", "Successfully created user with uid: ${it.result.user.uid}")
+                    userUID = it.result.user.uid
 
                     // 登録したユーザアイコンをFirebaseのストレージに保存する
                     // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
