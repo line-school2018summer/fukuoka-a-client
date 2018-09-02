@@ -45,7 +45,7 @@ class AddFriendsActivity : AppCompatActivity() {
             finish()
         }
 
-        /*
+
         groupAdapter.setOnItemClickListener { item, view ->
             val sItem = item as SelectableUserItem
             if (sItem.isSelected) {
@@ -55,8 +55,8 @@ class AddFriendsActivity : AppCompatActivity() {
                 selectedUser.add(sItem)
                 sItem.isSelected = true
             }
+            sItem.notifyChanged()
         }
-        */
 
     }
 
@@ -110,6 +110,7 @@ class AddFriendsActivity : AppCompatActivity() {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.5f
 
+            /*
             viewHolder.itemView.setOnClickListener {
                 if (isSelected) {
                     selectedUser.remove(this)
@@ -124,6 +125,7 @@ class AddFriendsActivity : AppCompatActivity() {
                 // デバッグ用
                 Log.d("AddFriendsActivity", selectedUser.toString())
             }
+            */
 
             // TODO : 友だちのアイコンを表示する
         }
