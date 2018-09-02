@@ -18,8 +18,9 @@ class LoginActivity : AppCompatActivity() {
             performLogin()
         }
 
-        back_to_registration_textview.setOnClickListener {
-            finish()
+        go_to_registration_textview.setOnClickListener {
+            val intent = Intent(this, RegistrationActivity::class.java)
+            startActivity(intent)
         }
     }
 

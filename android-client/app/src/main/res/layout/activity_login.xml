@@ -55,15 +55,13 @@
         app:layout_constraintTop_toBottomOf="@+id/password_edittext_login" />
 
     <TextView
-        android:id="@+id/back_to_registration_textview"
+        android:id="@+id/go_to_registration_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Back to registration"
+        android:text="アカウントを持っていない方はこちら"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"

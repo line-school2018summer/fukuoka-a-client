@@ -27,10 +27,8 @@ class RegistrationActivity : AppCompatActivity() {
             performRegister()
         }
 
-        already_have_account_textview.setOnClickListener {
-            // TODO:LoginActivityに遷移する
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+        back_to_login_textview.setOnClickListener {
+            finish()
         }
 
         // アイコンを設定する
