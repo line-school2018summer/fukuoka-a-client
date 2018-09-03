@@ -57,8 +57,18 @@ class AddFriendsActivity : AppCompatActivity() {
                 sItem.isSelected = true
             }
             sItem.notifyChanged()
+            updateGuideTextview()
         }
 
+    }
+
+    private fun updateGuideTextview() {
+        val numberSelected = selectedUser.size
+        if (numberSelected > 0) {
+            guide_textview_add_friends.text = "友だちになりたい人を選んでください(${numberSelected}人選択中)"
+        } else {
+            guide_textview_add_friends.text = "友だちになりたい人を選んでください"
+        }
     }
 
     private fun fetchSearchedUsers(keyword: String): MutableList<SelectableUserItem> {
@@ -88,6 +98,7 @@ class AddFriendsActivity : AppCompatActivity() {
         val items = fetchSearchedUsers(keyword)
 
         groupAdapter.addAll(items)
+        updateGuideTextview()
     }
 
     private fun generateDummyUsersItems(): MutableList<SelectableUserItem> {
