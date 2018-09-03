@@ -38,7 +38,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_box_add_friends" />
+        app:layout_constraintTop_toBottomOf="@+id/guide_textview_add_friends" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_friends_fab"
@@ -52,5 +52,19 @@
         android:src="@drawable/ic_person_add_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/guide_textview_add_friends"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/holo_green_dark"
+        android:text="友だちになりたい人を選択してください"
+        android:textColor="@android:color/white"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_box_add_friends" />
 
 </android.support.constraint.ConstraintLayout>
