@@ -15,11 +15,15 @@ class AddFriendsActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
-    val selectedUser = mutableListOf<SelectableUserItem>()
+    val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
+    var allUsers = mutableListOf<SelectableUserItem>()       // DBに登録されているユーザ全員
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
+
+        // Activity生成時に一回だけやればよい
+        fetchAllUsers()
 
         recycler_view_add_friends.apply {
             layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
@@ -50,10 +54,10 @@ class AddFriendsActivity : AppCompatActivity() {
         groupAdapter.setOnItemClickListener { item, view ->
             val sItem = item as SelectableUserItem
             if (sItem.isSelected) {
-                selectedUser.remove(sItem)
+                selectedUsers.remove(sItem)
                 sItem.isSelected = false
             } else {
-                selectedUser.add(sItem)
+                selectedUsers.add(sItem)
                 sItem.isSelected = true
             }
             sItem.notifyChanged()
@@ -63,7 +67,7 @@ class AddFriendsActivity : AppCompatActivity() {
     }
 
     private fun updateGuideTextview() {
-        val numberSelected = selectedUser.size
+        val numberSelected = selectedUsers.size
         if (numberSelected > 0) {
             guide_textview_add_friends.text = "友だちになりたい人を選んでください(${numberSelected}人選択中)"
         } else {
@@ -72,11 +76,14 @@ class AddFriendsActivity : AppCompatActivity() {
     }
 
     private fun fetchSearchedUsers(keyword: String): MutableList<SelectableUserItem> {
-        val allUsers = fetchAllUsers()
         val searchedUsers = mutableListOf<SelectableUserItem>()
 
         for (user in allUsers) {
             if (user.userName.indexOf(keyword) >= 0) {
+                if (selectedUsers.contains(user)) {
+                    Log.d("hoge", "hoge")
+                    user.isSelected = true
+                }
                 searchedUsers.add(user)
             }
         }
@@ -84,16 +91,14 @@ class AddFriendsActivity : AppCompatActivity() {
         return searchedUsers
     }
 
-    private fun fetchAllUsers(): MutableList<SelectableUserItem> {
+    private fun fetchAllUsers() {
         // とりあえずダミーでユーザ全体のリストを作っている
         // TODO: データベースに登録されているユーザ全体を取ってくる処理を書く
-        val allUsers = generateDummyUsersItems()
-        return allUsers
+        allUsers = generateDummyUsersItems()
     }
 
     private fun displaySearchedUsers(keyword: String) {
         groupAdapter.clear()
-        selectedUser.clear()
 
         val items = fetchSearchedUsers(keyword)
 
