@@ -45,8 +45,14 @@ class AddFriendsActivity : AppCompatActivity() {
         }
 
         add_friends_fab.setOnClickListener {
+            if (selectedUsers.isEmpty()) {
+                Toast.makeText(this, "友だちが選択されていません", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             // TODO: 選んだユーザを友だちに追加する処理
-            Toast.makeText(this, "友だちに追加しました！", Toast.LENGTH_SHORT).show()
+            val numberSelected = selectedUsers.size
+            Toast.makeText(this, "${numberSelected}人を友だちに追加しました！", Toast.LENGTH_LONG).show()
             finish()
         }
 
