@@ -26,6 +26,7 @@ class AddFriendsActivity : AppCompatActivity() {
                 spanSizeLookup = groupAdapter.spanSizeLookup
             }
             adapter = groupAdapter
+            itemAnimator = null
         }
 
         supportActionBar?.title = "友だちを追加"
