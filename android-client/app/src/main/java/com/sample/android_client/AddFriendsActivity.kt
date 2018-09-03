@@ -50,6 +50,10 @@ class AddFriendsActivity : AppCompatActivity() {
             finish()
         }
 
+        delete_button_add_friends.setOnClickListener {
+            search_box_add_friends.text.clear()
+            displaySearchedUsers("")
+        }
 
         groupAdapter.setOnItemClickListener { item, view ->
             val sItem = item as SelectableUserItem
