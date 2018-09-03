@@ -29,17 +29,17 @@ class UsersDBHelper(context: Context) : ManagedSQLiteOpenHelper(context, "localD
     override fun onUpgrade(db: SQLiteDatabase?, newVersion: Int, oldVersion: Int) {
 
     }
-
-    fun saveUserData(db: SQLiteDatabase, userData: List<User>) {
-        db.transaction {
+    
+    fun saveUserData(userData: List<User>) {
+        this.writableDatabase.transaction {
             userData.forEach {
-                db.insert("Users",
+                this.insert("Users",
                         "ID" to it.ID,
                         "Name" to it.name,
                         "Email" to it.email,
                         "IconID" to it.iconID,
                         "IconURL" to it.iconURL,
-                        "isFriend" to it.isFriend)
+                        "isFriend" to if (it.isFriend) 1 else 0)
             }
         }
     }
