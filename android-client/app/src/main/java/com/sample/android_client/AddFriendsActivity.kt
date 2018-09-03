@@ -16,7 +16,7 @@ class AddFriendsActivity : AppCompatActivity() {
         spanCount = 4
     }
     val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
-    var allUsers = mutableListOf<SelectableUserItem>()       // DBに登録されているユーザ全員
+    var allUsers = listOf<SelectableUserItem>()       // DBに登録されているユーザ全員
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,17 +116,17 @@ class AddFriendsActivity : AppCompatActivity() {
         updateGuideTextview()
     }
 
-    private fun generateDummyUsersItems(): MutableList<SelectableUserItem> {
-        val dummyUsersItems = mutableListOf<SelectableUserItem>()
+    private fun generateDummyUsersItems(): List<SelectableUserItem> {
+        val dummyUserItems = listOf<SelectableUserItem>(
+                SelectableUserItem(0, "saito yuya", "", false),
+                SelectableUserItem(0, "suzuki yuto", "", false),
+                SelectableUserItem(0, "suzuki takuma", "", false),
+                SelectableUserItem(0, "honda keisuke", "", false),
+                SelectableUserItem(0, "kawasaki tomoya", "", false),
+                SelectableUserItem(0, "yamaha tarou", "", false)
+        )
 
-        dummyUsersItems.add(SelectableUserItem(0, "saito yuya", "", false))
-        dummyUsersItems.add(SelectableUserItem(0, "suzuki yuto", "", false))
-        dummyUsersItems.add(SelectableUserItem(0, "suzuki takuma", "", false))
-        dummyUsersItems.add(SelectableUserItem(0, "honda keisuke", "", false))
-        dummyUsersItems.add(SelectableUserItem(0, "kawasaki tomoya", "", false))
-        dummyUsersItems.add(SelectableUserItem(0, "yamaha tarou", "", false))
-
-        return dummyUsersItems
+        return dummyUserItems
     }
 
     inner class SelectableUserItem(val userId: Long,
