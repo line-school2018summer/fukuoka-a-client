@@ -110,24 +110,6 @@ class AddFriendsActivity : AppCompatActivity() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.5f
-
-            /*
-            viewHolder.itemView.setOnClickListener {
-                if (isSelected) {
-                    selectedUser.remove(this)
-                    isSelected = false
-                    viewHolder.itemView.alpha = 0.5f
-                } else {
-                    selectedUser.add(this)
-                    isSelected = true
-                    viewHolder.itemView.alpha = 1f
-                }
-
-                // デバッグ用
-                Log.d("AddFriendsActivity", selectedUser.toString())
-            }
-            */
-
             // TODO : 友だちのアイコンを表示する
         }
 
