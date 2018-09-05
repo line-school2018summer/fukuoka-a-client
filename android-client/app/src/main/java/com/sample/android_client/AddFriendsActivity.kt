@@ -98,7 +98,7 @@ class AddFriendsActivity : AppCompatActivity() {
         val item = fetchSearchedUsers(keyword)
 
         if (item == null) {
-            Toast.makeText(this, "一致するユーザが見つかりません", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "一致するユーザが見つかりません", Toast.LENGTH_LONG).show()
             return
         }
 
