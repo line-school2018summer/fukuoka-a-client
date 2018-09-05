@@ -81,30 +81,12 @@ class AddFriendsActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private fun fetchSearchedUsers(keyword: String): MutableList<SelectableUserItem> {
-        val searchedUsers = mutableListOf<SelectableUserItem>()
-
-        for (user in allUsers) {
-            if (user.userName.indexOf(keyword) >= 0) {
-                if (selectedUsers.contains(user)) {
-                    Log.d("hoge", "hoge")
-                    user.isSelected = true
-                }
-                searchedUsers.add(user)
-            }
-        }
-
-        return searchedUsers
-    }
-    */
-
     // 友だちを検索するときは、ユーザが決める一意なIDで検索させる
     // 悪用されないように完全一致にする
     // 一致するユーザが見つからないときはnullを返す
-    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
-        return allUsers.singleOrNull { it.userId == keyword }
-    }
+    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? =
+            allUsers.singleOrNull { it.userId == keyword }
+
 
     private fun fetchAllUsers() {
         // とりあえずダミーでユーザ全体のリストを作っている
