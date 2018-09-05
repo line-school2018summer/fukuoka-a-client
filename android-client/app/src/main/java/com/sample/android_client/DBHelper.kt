@@ -31,15 +31,17 @@ class UsersDBHelper(context: Context) : ManagedSQLiteOpenHelper(context, "localD
     }
 
     fun saveUserData(userData: List<User>) {
-        this.writableDatabase.transaction {
-            userData.forEach {
-                this.insert("users",
-                        "id" to it.id,
-                        "server_id" to it.serverId,
-                        "user_id" to it.userId,
-                        "name" to it.name,
-                        "icon_id" to it.iconId,
-                        "is_friend" to if (it.isFriend) 1 else 0)
+        this.use {
+            this.transaction {
+                userData.forEach {
+                    this.insert("users",
+                            "id" to it.id,
+                            "server_id" to it.serverId,
+                            "user_id" to it.userId,
+                            "name" to it.name,
+                            "icon_id" to it.iconId,
+                            "is_friend" to if (it.isFriend) 1 else 0)
+                }
             }
         }
     }
@@ -71,8 +73,8 @@ class RoomsTableHelper(content: Context) : ManagedSQLiteOpenHelper(content, "loc
     }
 
     fun insertRoom(newRoom: Room) {
-        this.writableDatabase.use {
-            it.insert("rooms",
+        this.use {
+            this.insert("rooms",
                     "server_id" to newRoom.serverId,
                     "icon_id" to newRoom.iconId,
                     "name" to newRoom.name,
