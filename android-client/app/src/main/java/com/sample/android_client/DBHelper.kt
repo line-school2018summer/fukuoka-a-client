@@ -43,5 +43,42 @@ class UsersDBHelper(context: Context) : ManagedSQLiteOpenHelper(context, "localD
             }
         }
     }
-
 }
+
+class RoomsTableHelper(content: Context) : ManagedSQLiteOpenHelper(content, "localDate.db", null, 1) {
+    companion object {
+        private var instance: RoomsTableHelper? = null
+        @Synchronized
+        fun getInstance(context: Context): RoomsTableHelper {
+            if (instance == null) {
+                instance = RoomsTableHelper(context.applicationContext)
+            }
+            return instance!!
+        }
+    }
+
+    override fun onCreate(db: SQLiteDatabase) {
+        db.createTable("rooms", true,
+                "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "server_id" to INTEGER + UNIQUE + NOT_NULL,
+                "icon_id" to INTEGER + UNIQUE + NOT_NULL,
+                "name" to TEXT + NOT_NULL,
+                "is_group" to INTEGER + NOT_NULL)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, newVersion: Int, oldVersion: Int) {
+
+    }
+
+    fun insertRoom(newRoom: Room) {
+        this.writableDatabase.use {
+            it.insert("rooms",
+                    "server_id" to newRoom.serverId,
+                    "icon_id" to newRoom.iconId,
+                    "name" to newRoom.name,
+                    "is_group" to if (newRoom.isGroup) 1 else 0)
+        }
+    }
+}
+
+data class Room(val serverId: Int, val iconId: Int, val name: String, val isGroup: Boolean)
