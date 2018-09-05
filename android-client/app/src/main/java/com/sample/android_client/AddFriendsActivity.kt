@@ -38,7 +38,7 @@ class AddFriendsActivity : AppCompatActivity() {
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
-            displaySearchedUsers(keyword)
+            displaySearchedUser(keyword)
         }
 
         add_friends_fab.setOnClickListener {
@@ -81,6 +81,7 @@ class AddFriendsActivity : AppCompatActivity() {
         }
     }
 
+    /*
     private fun fetchSearchedUsers(keyword: String): MutableList<SelectableUserItem> {
         val searchedUsers = mutableListOf<SelectableUserItem>()
 
@@ -96,6 +97,14 @@ class AddFriendsActivity : AppCompatActivity() {
 
         return searchedUsers
     }
+    */
+
+    // 友だちを検索するときは、ユーザが決める一意なIDで検索させる
+    // 悪用されないように完全一致にする
+    // 一致するユーザが見つからないときはnullを返す
+    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
+        return allUsers.singleOrNull { it.userId == keyword }
+    }
 
     private fun fetchAllUsers() {
         // とりあえずダミーでユーザ全体のリストを作っている
@@ -103,30 +112,34 @@ class AddFriendsActivity : AppCompatActivity() {
         allUsers = generateDummyUsersItems()
     }
 
-    private fun displaySearchedUsers(keyword: String) {
+    private fun displaySearchedUser(keyword: String) {
+        val item = fetchSearchedUsers(keyword)
+
+        if (item == null) {
+            Toast.makeText(this, "一致するユーザが見つかりません", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         groupAdapter.clear()
-
-        val items = fetchSearchedUsers(keyword)
-
-        groupAdapter.addAll(items)
+        groupAdapter.add(item)
         updateGuideTextview()
     }
 
     private fun generateDummyUsersItems(): List<SelectableUserItem> {
         val dummyUserItems = listOf<SelectableUserItem>(
-                SelectableUserItem(0, "saito yuya", "", false),
-                SelectableUserItem(0, "suzuki yuto", "", false),
-                SelectableUserItem(0, "suzuki takuma", "", false),
-                SelectableUserItem(0, "honda keisuke", "", false),
-                SelectableUserItem(0, "kawasaki tomoya", "", false),
-                SelectableUserItem(0, "yamaha tarou", "", false)
+                SelectableUserItem("a", "saito yuya", "", false),
+                SelectableUserItem("b", "suzuki yuto", "", false),
+                SelectableUserItem("c", "suzuki takuma", "", false),
+                SelectableUserItem("d", "honda keisuke", "", false),
+                SelectableUserItem("e", "kawasaki tomoya", "", false),
+                SelectableUserItem("f", "yamaha tarou", "", false)
         )
 
         return dummyUserItems
     }
 
-    inner class SelectableUserItem(val userId: Long,
-                                   val userName: String,
+    inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
+                                   val userName: String,    // Userが表示したい名前
                                    val userIconURI: String,
                                    var isSelected: Boolean) : Item() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
