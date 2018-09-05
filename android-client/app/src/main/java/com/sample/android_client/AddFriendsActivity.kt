@@ -33,7 +33,7 @@ class AddFriendsActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-        supportActionBar?.title = "友だちを追加"
+        supportActionBar?.title = "友達を追加"
 
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
@@ -49,13 +49,13 @@ class AddFriendsActivity : AppCompatActivity() {
 
         add_friends_fab.setOnClickListener {
             if (selectedUsers.isEmpty()) {
-                Toast.makeText(this, "友だちが選択されていません", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "友達が選択されていません", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // TODO: 選んだユーザを友だちに追加する処理
+            // TODO: 選んだユーザを友達に追加する処理
             val numberSelected = selectedUsers.size
-            Toast.makeText(this, "${numberSelected}人を友だちに追加しました！", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "${numberSelected}人を友達に追加しました！", Toast.LENGTH_LONG).show()
             finish()
         }
 
@@ -79,20 +79,20 @@ class AddFriendsActivity : AppCompatActivity() {
     }
 
     private fun isAlreadyFriend(keyword: String): Boolean {
-        // TODO: keywordをuserIdに持つユーザが存在し、かつその人と既に友だちであればtrueを返す処理
+        // TODO: keywordをuserIdに持つユーザが存在し、かつその人と既に友達であればtrueを返す処理
         return false
     }
 
     private fun updateGuideTextview() {
         val numberSelected = selectedUsers.size
         if (numberSelected > 0) {
-            guide_textview_add_friends.text = "友だちになりたい人を選んでください(${numberSelected}人選択中)"
+            guide_textview_add_friends.text = "友達になりたい人を選んでください(${numberSelected}人選択中)"
         } else {
-            guide_textview_add_friends.text = "友だちになりたい人を選んでください"
+            guide_textview_add_friends.text = "友達になりたい人を選んでください"
         }
     }
 
-    // 友だちを検索するときは、ユーザが決める一意なIDで検索させる
+    // 友達を検索するときは、ユーザが決める一意なIDで検索させる
     // 悪用されないように完全一致にする
     // 一致するユーザが見つからないときはnullを返す
     private fun fetchSearchedUsers(keyword: String): SelectableUserItem? =
@@ -138,7 +138,7 @@ class AddFriendsActivity : AppCompatActivity() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
-            // TODO : 友だちのアイコンを表示する
+            // TODO : 友達のアイコンを表示する
         }
 
         override fun getLayout(): Int = R.layout.item_friend_friends
