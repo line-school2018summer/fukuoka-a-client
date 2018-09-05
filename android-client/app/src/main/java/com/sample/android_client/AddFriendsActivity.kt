@@ -38,6 +38,12 @@ class AddFriendsActivity : AppCompatActivity() {
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
+
+            if (isAlreadyFriend(keyword)) {
+                Toast.makeText(this, "検索したユーザは既に友達です", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             displaySearchedUser(keyword)
         }
 
@@ -70,6 +76,11 @@ class AddFriendsActivity : AppCompatActivity() {
             updateGuideTextview()
         }
 
+    }
+
+    private fun isAlreadyFriend(keyword: String): Boolean {
+        // TODO: keywordをuserIdに持つユーザが存在し、かつその人と既に友だちであればtrueを返す処理
+        return false
     }
 
     private fun updateGuideTextview() {
