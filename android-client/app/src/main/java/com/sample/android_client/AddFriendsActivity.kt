@@ -109,12 +109,12 @@ class AddFriendsActivity : AppCompatActivity() {
 
     private fun generateDummyUsersItems(): List<SelectableUserItem> {
         val dummyUserItems = listOf<SelectableUserItem>(
-                SelectableUserItem("a", "saito yuya", "", false),
-                SelectableUserItem("b", "suzuki yuto", "", false),
-                SelectableUserItem("c", "suzuki takuma", "", false),
-                SelectableUserItem("d", "honda keisuke", "", false),
-                SelectableUserItem("e", "kawasaki tomoya", "", false),
-                SelectableUserItem("f", "yamaha tarou", "", false)
+                SelectableUserItem("a", "saito yuya", ""),
+                SelectableUserItem("b", "suzuki yuto", ""),
+                SelectableUserItem("c", "suzuki takuma", ""),
+                SelectableUserItem("d", "honda keisuke", ""),
+                SelectableUserItem("e", "kawasaki tomoya", ""),
+                SelectableUserItem("f", "yamaha tarou", "")
         )
 
         return dummyUserItems
@@ -123,7 +123,7 @@ class AddFriendsActivity : AppCompatActivity() {
     inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
                                    val userName: String,    // Userが表示したい名前
                                    val userIconURI: String,
-                                   var isSelected: Boolean) : Item() {
+                                   var isSelected: Boolean = false) : Item() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
