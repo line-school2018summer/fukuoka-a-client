@@ -131,7 +131,7 @@ class AddFriendsActivity : AppCompatActivity() {
                                    var isSelected: Boolean) : Item() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
-            viewHolder.itemView.alpha = if (isSelected) 1f else 0.5f
+            viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
             // TODO : 友だちのアイコンを表示する
         }
 
