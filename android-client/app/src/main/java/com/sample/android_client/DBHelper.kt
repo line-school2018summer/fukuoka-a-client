@@ -18,12 +18,12 @@ class UsersDBHelper(context: Context) : ManagedSQLiteOpenHelper(context, "localD
 
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable("users", true,
-                "id" to INTEGER + PRIMARY_KEY + UNIQUE,
-                "server_id" to INTEGER,
-                "user_id" to INTEGER,
-                "name" to TEXT,
-                "icon_id" to INTEGER,
-                "is_friend" to INTEGER)
+                "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "server_id" to INTEGER + UNIQUE + NOT_NULL,
+                "user_id" to INTEGER + UNIQUE + NOT_NULL,
+                "name" to TEXT + NOT_NULL,
+                "icon_id" to INTEGER + UNIQUE,
+                "is_friend" to INTEGER + NOT_NULL)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, newVersion: Int, oldVersion: Int) {
