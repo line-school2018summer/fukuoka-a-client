@@ -24,7 +24,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="友だちを検索"
+        android:hint="友だちのIDを検索"
         android:inputType="textPersonName"
         android:paddingHorizontal="8dp"
         app:layout_constraintEnd_toStartOf="@+id/search_button_add_friends"
