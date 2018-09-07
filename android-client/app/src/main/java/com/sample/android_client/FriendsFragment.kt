@@ -1,5 +1,6 @@
 package com.sample.android_client
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -43,7 +44,10 @@ class FriendsFragment : Fragment() {
             // 文字を入力するたびリアルタイムで検索していくとかもかっこいいけど難しそう
         }
 
-
+        create_group_button_friends.setOnClickListener {
+            val intent = Intent(activity, CreateGroupActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun displayGroupsAndFriends() {
