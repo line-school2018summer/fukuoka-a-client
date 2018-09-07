@@ -49,8 +49,23 @@ class CreateGroupActivity : AppCompatActivity() {
         }
 
         fab_create_group.setOnClickListener {
-            // TODO: 新しくグループを作ってサーバのDBに登録する処理
+            val groupName = group_name_edittext_create_group.text.toString()
+
+            if (groupName.isEmpty()) {
+                Toast.makeText(this, "グループ名を入力してください", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (selectedUsers.isEmpty()) {
+                Toast.makeText(this, "選択されたユーザが存在しません", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            // TODO: 選択されたユーザのリストで新しくグループを作ってサーバのDBに登録する処理
             // TODO: ローカルDBに登録する処理
+
+            Toast.makeText(this, "グループを作成しました！", Toast.LENGTH_LONG).show()
+            finish()
         }
 
         delete_button_create_group.setOnClickListener {
