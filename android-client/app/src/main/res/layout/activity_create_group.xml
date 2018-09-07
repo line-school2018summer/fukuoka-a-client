@@ -113,7 +113,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/horizontal_recycler_view_create_group"
         android:layout_width="0dp"
-        android:layout_height="90dp"
+        android:layout_height="80dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
