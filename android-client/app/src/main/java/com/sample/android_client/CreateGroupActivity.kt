@@ -29,7 +29,9 @@ class CreateGroupActivity : AppCompatActivity() {
 
         search_button_create_group.setOnClickListener {
             val keyword = search_box_create_group.text.toString()
-            Log.d("CreateGroupActivity", "文字列${keyword}が含まれるユーザを検索")
+            Log.d("CreateGroupActivity", "文字列${keyword}が名前に含まれるユーザを検索")
+
+            // TODO: ローカルDBからkeywordを名前に含むユーザを引っ張ってきてリストを作成する
         }
 
         fab_create_group.setOnClickListener {

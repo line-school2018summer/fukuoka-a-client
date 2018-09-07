@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".CreateGroupActivity">
 
+    <EditText
+        android:id="@+id/group_name_edittext_create_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="8dp"
+        android:ems="10"
+        android:hint="グループ名"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/delete_button_create_group"
         android:layout_width="20dp"
@@ -26,7 +41,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="友だちのIDを検索"
+        android:hint="友達の名前を検索"
         android:inputType="textPersonName"
         android:paddingHorizontal="8dp"
         app:layout_constraintEnd_toStartOf="@+id/search_button_create_group"
@@ -52,7 +67,7 @@
         android:background="@android:color/holo_green_dark"
         android:paddingHorizontal="8dp"
         android:paddingVertical="4dp"
-        android:text="友だちになりたい人を選択してください"
+        android:text="グループに追加したい人を選択してください"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -81,20 +96,6 @@
         android:src="@drawable/ic_check_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/group_name_edittext_create_group"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="グループ名"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
