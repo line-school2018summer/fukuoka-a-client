@@ -72,6 +72,11 @@ class RegistrationActivity : AppCompatActivity() {
                     Log.d("RegisterActivity", "Successfully created user with uid: ${it.result.user.uid}")
                     userUID = it.result.user.uid
 
+                    if (selectedPhotoUri == null) {
+                        Log.d("RegistrationActivity", "アイコンが選択されていないのでデフォルトアイコンを設定する")
+                        // TODO: デフォルトアイコンを設定する
+                    }
+
                     // 登録したユーザアイコンをFirebaseのストレージに保存する
                     // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
                     uploadImageToFirebaseStorage()
