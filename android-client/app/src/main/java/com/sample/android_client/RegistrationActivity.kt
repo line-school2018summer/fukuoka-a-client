@@ -95,6 +95,11 @@ class RegistrationActivity : AppCompatActivity() {
             return false
         }
 
+        if (isAlreadyRegistered(userId)) {
+            Toast.makeText(this, "このUserIDは既に登録されています", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
         if (name.isEmpty()) {
             Toast.makeText(this, "Nameを入力してください", Toast.LENGTH_SHORT).show()
             return false
@@ -116,6 +121,11 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun isAlreadyRegistered(userId: String): Boolean {
+        // TODO: サーバのDBにアクセスして、userIdが既に登録していないか確かめる
+        return false
     }
 
 
