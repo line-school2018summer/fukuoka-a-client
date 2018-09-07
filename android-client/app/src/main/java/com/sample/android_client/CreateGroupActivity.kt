@@ -31,6 +31,9 @@ class CreateGroupActivity : AppCompatActivity() {
         // ダミーデータの作成
         generateDummyUsersItems()
 
+        // 最初は全ての友達を表示する
+        displaySearchedUser()
+
         // 検索したユーザを表示するためのrecyclerviewの設定
         recycler_view_create_group.apply {
             layoutManager = GridLayoutManager(this@CreateGroupActivity, groupAdapter.spanCount).apply {
@@ -121,7 +124,7 @@ class CreateGroupActivity : AppCompatActivity() {
         return searchedUsers
     }
 
-    private fun displaySearchedUser(keyword: String) {
+    private fun displaySearchedUser(keyword: String = "") {
         val items = fetchSearchedUsers(keyword)
         groupAdapter.clear()
         groupAdapter.addAll(items)
