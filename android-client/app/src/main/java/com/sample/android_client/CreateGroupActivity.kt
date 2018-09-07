@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
@@ -49,6 +51,18 @@ class CreateGroupActivity : AppCompatActivity() {
             Log.d("CreateGroupActivity", "文字列${keyword}が名前に含まれるユーザを検索")
             displaySearchedUser(keyword)
         }
+
+        search_box_create_group.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                displaySearchedUser(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
 
         fab_create_group.setOnClickListener {
             val groupName = group_name_edittext_create_group.text.toString()
