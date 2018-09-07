@@ -3,6 +3,7 @@ package com.sample.android_client
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
@@ -15,6 +16,7 @@ class CreateGroupActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
+    val hGroupAdapter = GroupAdapter<ViewHolder>()
     lateinit var dummyUserItems: MutableList<SelectableUserItem>
     val selectedUsers = mutableListOf<SelectableUserItem>()     // 選択されたユーザのリスト
 
@@ -32,6 +34,25 @@ class CreateGroupActivity : AppCompatActivity() {
             }
             adapter = groupAdapter
             itemAnimator = null
+        }
+
+        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
+        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
+
+
+        horizontal_recycler_view_create_group.apply {
+            layoutManager = LinearLayoutManager(this@CreateGroupActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = hGroupAdapter
         }
 
         search_button_create_group.setOnClickListener {
@@ -109,7 +130,7 @@ class CreateGroupActivity : AppCompatActivity() {
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
-            viewHolder.user_name_textview_friends.text = userName
+            viewHolder.user_name_textview_scroll.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
             // TODO : 友達のアイコンを表示する
         }
@@ -122,5 +143,15 @@ class CreateGroupActivity : AppCompatActivity() {
         override fun toString(): String {
             return userName
         }
+    }
+
+    inner class ScrollUserItem(val userId: String,
+                               val userName: String,
+                               val userIconId: Int) : Item() {
+        override fun bind(viewHolder: ViewHolder, position: Int) {
+            viewHolder.user_name_textview_scroll.text = userName
+        }
+
+        override fun getLayout(): Int = R.layout.item_user_scroll
     }
 }
