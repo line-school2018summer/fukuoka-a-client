@@ -15,6 +15,7 @@ class CreateGroupActivity : AppCompatActivity() {
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
+    lateinit var dummyUserItems: MutableList<SelectableUserItem>
     val selectedUsers = mutableListOf<SelectableUserItem>()     // 選択されたユーザのリスト
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +23,8 @@ class CreateGroupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_group)
 
         supportActionBar?.title = "新しいグループを作る"
+
+        generateDummyUsersItems()
 
         recycler_view_create_group.apply {
             layoutManager = GridLayoutManager(this@CreateGroupActivity, groupAdapter.spanCount).apply {
@@ -73,7 +76,7 @@ class CreateGroupActivity : AppCompatActivity() {
     // ユーザが決める一意なIDではなく、表示している名前の部分一致で検索する
     private fun fetchSearchedUsers(keyword: String): List<SelectableUserItem> {
         // TODO: ダミーデータじゃなくて、ローカルDBを検索して同様のことをする
-        val searchedUsers = generateDummyUsersItems().filter { item -> item.userName.indexOf(keyword) >= 0 }
+        val searchedUsers = dummyUserItems.filter { item -> item.userName.indexOf(keyword) >= 0 }
         return searchedUsers
     }
 
@@ -88,8 +91,8 @@ class CreateGroupActivity : AppCompatActivity() {
         updateGuideTextview()
     }
 
-    private fun generateDummyUsersItems(): List<SelectableUserItem> {
-        val dummyUserItems = mutableListOf<SelectableUserItem>(
+    private fun generateDummyUsersItems() {
+        dummyUserItems = mutableListOf<SelectableUserItem>(
                 SelectableUserItem("a", "saito yuya", 0),
                 SelectableUserItem("b", "suzuki yuto", 0),
                 SelectableUserItem("c", "suzuki takuma", 0),
@@ -99,7 +102,6 @@ class CreateGroupActivity : AppCompatActivity() {
         )
         for (i in 1..20)
             dummyUserItems.add(SelectableUserItem("b", "suzuki yuto", 0))
-        return dummyUserItems
     }
 
     inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
