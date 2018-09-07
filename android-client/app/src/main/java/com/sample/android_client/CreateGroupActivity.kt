@@ -26,8 +26,10 @@ class CreateGroupActivity : AppCompatActivity() {
 
         supportActionBar?.title = "新しいグループを作る"
 
+        // ダミーデータの作成
         generateDummyUsersItems()
 
+        // 検索したユーザを表示するためのrecyclerviewの設定
         recycler_view_create_group.apply {
             layoutManager = GridLayoutManager(this@CreateGroupActivity, groupAdapter.spanCount).apply {
                 spanSizeLookup = groupAdapter.spanSizeLookup
@@ -36,7 +38,7 @@ class CreateGroupActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-
+        // 選択したユーザを画面下部に横スクロールで表示するためのrecyclerviewの設定
         horizontal_recycler_view_create_group.apply {
             layoutManager = LinearLayoutManager(this@CreateGroupActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = hGroupAdapter
@@ -162,6 +164,7 @@ class CreateGroupActivity : AppCompatActivity() {
             val limitLength = 10
             val displayName = if (userName.length <= limitLength) userName else userName.substring(0 until limitLength - 1) + "..."
             viewHolder.user_name_textview_scroll.text = displayName
+            // TODO : 友達のアイコンを表示する
         }
 
         override fun getLayout(): Int = R.layout.item_user_scroll
