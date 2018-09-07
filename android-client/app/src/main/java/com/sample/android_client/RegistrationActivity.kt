@@ -61,7 +61,7 @@ class RegistrationActivity : AppCompatActivity() {
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
-        verifyInputData(userId, name, email, password)
+        if (!isValidInputData(userId, name, email, password)) return
 
         // FirebaseAuthを用いたアカウント作成
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -87,33 +87,35 @@ class RegistrationActivity : AppCompatActivity() {
 
     }
 
-    private fun verifyInputData(userId: String, name: String, email: String, password: String) {
+    private fun isValidInputData(userId: String, name: String, email: String, password: String): Boolean {
         val limitUserNameLength = 20        // ユーザが登録できる名前の長さの限界
 
         if (userId.isEmpty()) {
             Toast.makeText(this, "UserIDを入力してください", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         if (name.isEmpty()) {
             Toast.makeText(this, "Nameを入力してください", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         if (name.length > limitUserNameLength) {
             Toast.makeText(this, "名前は${limitUserNameLength}文字以内にしてください", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         if (email.isEmpty()) {
             Toast.makeText(this, "Emailを入力してください", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         if (password.isEmpty()) {
             Toast.makeText(this, "Passwordを入力してください", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
+
+        return true
     }
 
 
