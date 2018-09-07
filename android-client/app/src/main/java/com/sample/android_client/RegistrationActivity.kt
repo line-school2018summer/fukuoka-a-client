@@ -56,12 +56,39 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
-        val limitUserNameLength = 20        // ユーザが登録できる名前の長さの限界
-
         val userId = userid_edittext_register.text.toString()
         val name = username_edittext_register.text.toString()
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
+
+        verifyInputData(userId, name, email, password)
+
+        // FirebaseAuthを用いたアカウント作成
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener {
+                    if (!it.isSuccessful) return@addOnCompleteListener
+
+                    // ユーザ登録に成功した場合
+                    Log.d("RegisterActivity", "Successfully created user with uid: ${it.result.user.uid}")
+                    userUID = it.result.user.uid
+
+                    // 登録したユーザアイコンをFirebaseのストレージに保存する
+                    // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
+                    uploadImageToFirebaseStorage()
+
+                    Toast.makeText(this, "ユーザ登録が完了しました！", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                }
+                .addOnFailureListener {
+                    Log.d("RegisterActivity", "Failed to create user: ${it.message}")
+                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT).show()
+                }
+
+    }
+
+    private fun verifyInputData(userId: String, name: String, email: String, password: String) {
+        val limitUserNameLength = 20        // ユーザが登録できる名前の長さの限界
 
         if (userId.isEmpty()) {
             Toast.makeText(this, "UserIDを入力してください", Toast.LENGTH_SHORT).show()
@@ -87,29 +114,6 @@ class RegistrationActivity : AppCompatActivity() {
             Toast.makeText(this, "Passwordを入力してください", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // FirebaseAuthを用いたアカウント作成
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener {
-                    if (!it.isSuccessful) return@addOnCompleteListener
-
-                    // ユーザ登録に成功した場合
-                    Log.d("RegisterActivity", "Successfully created user with uid: ${it.result.user.uid}")
-                    userUID = it.result.user.uid
-
-                    // 登録したユーザアイコンをFirebaseのストレージに保存する
-                    // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
-                    uploadImageToFirebaseStorage()
-
-                    Toast.makeText(this, "ユーザ登録が完了しました！", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                }
-                .addOnFailureListener {
-                    Log.d("RegisterActivity", "Failed to create user: ${it.message}")
-                    Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT).show()
-                }
-
     }
 
 
