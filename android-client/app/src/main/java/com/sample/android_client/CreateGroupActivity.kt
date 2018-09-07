@@ -82,9 +82,9 @@ class CreateGroupActivity : AppCompatActivity() {
     private fun updateGuideTextview() {
         val numberSelected = selectedUsers.size
         if (numberSelected > 0) {
-            guide_textview_create_group.text = "グループに追加したい人を選んでください(${numberSelected}人選択中)"
+            select_user_guide_create_group.text = "選択中のユーザ(${numberSelected})"
         } else {
-            guide_textview_create_group.text = "グループに追加したい人を選んでください"
+            select_user_guide_create_group.text = "選択中のユーザ"
         }
     }
 
