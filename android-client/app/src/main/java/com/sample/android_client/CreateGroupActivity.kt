@@ -46,12 +46,6 @@ class CreateGroupActivity : AppCompatActivity() {
             adapter = hGroupAdapter
         }
 
-        search_button_create_group.setOnClickListener {
-            val keyword = search_box_create_group.text.toString()
-            Log.d("CreateGroupActivity", "文字列${keyword}が名前に含まれるユーザを検索")
-            displaySearchedUser(keyword)
-        }
-
         search_box_create_group.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 displaySearchedUser(p0.toString())
