@@ -89,7 +89,7 @@ class CreateGroupActivity : AppCompatActivity() {
     }
 
     private fun generateDummyUsersItems(): List<SelectableUserItem> {
-        val dummyUserItems = listOf<SelectableUserItem>(
+        val dummyUserItems = mutableListOf<SelectableUserItem>(
                 SelectableUserItem("a", "saito yuya", 0),
                 SelectableUserItem("b", "suzuki yuto", 0),
                 SelectableUserItem("c", "suzuki takuma", 0),
@@ -97,6 +97,8 @@ class CreateGroupActivity : AppCompatActivity() {
                 SelectableUserItem("e", "kawasaki tomoya", 0),
                 SelectableUserItem("f", "yamaha tarou", 0)
         )
+        for (i in 1..20)
+            dummyUserItems.add(SelectableUserItem("b", "suzuki yuto", 0))
         return dummyUserItems
     }
 
