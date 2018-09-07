@@ -123,10 +123,6 @@ class CreateGroupActivity : AppCompatActivity() {
 
     private fun displaySearchedUser(keyword: String) {
         val items = fetchSearchedUsers(keyword)
-        if (items.isEmpty()) {
-            Toast.makeText(this, "一致するユーザが見つかりません", Toast.LENGTH_LONG).show()
-            return
-        }
         groupAdapter.clear()
         groupAdapter.addAll(items)
         updateGuideTextview()
