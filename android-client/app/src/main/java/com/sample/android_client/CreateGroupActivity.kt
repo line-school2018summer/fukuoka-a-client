@@ -36,19 +36,6 @@ class CreateGroupActivity : AppCompatActivity() {
             itemAnimator = null
         }
 
-        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "hoge", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "fuga", 0))
-        hGroupAdapter.add(ScrollUserItem("a", "pote", 0))
-
 
         horizontal_recycler_view_create_group.apply {
             layoutManager = LinearLayoutManager(this@CreateGroupActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -81,6 +68,14 @@ class CreateGroupActivity : AppCompatActivity() {
             }
             sItem.notifyChanged()
             updateGuideTextview()
+            updateScrollView()
+        }
+    }
+
+    private fun updateScrollView() {
+        hGroupAdapter.clear()
+        for (user in selectedUsers) {
+            hGroupAdapter.add(ScrollUserItem(user.userId, user.userName, user.userIconId))
         }
     }
 
@@ -149,7 +144,9 @@ class CreateGroupActivity : AppCompatActivity() {
                                val userName: String,
                                val userIconId: Int) : Item() {
         override fun bind(viewHolder: ViewHolder, position: Int) {
-            viewHolder.user_name_textview_scroll.text = userName
+            val limitLength = 10
+            val displayName = if (userName.length <= limitLength) userName else userName.substring(0 until limitLength - 1) + "..."
+            viewHolder.user_name_textview_scroll.text = displayName
         }
 
         override fun getLayout(): Int = R.layout.item_user_scroll
