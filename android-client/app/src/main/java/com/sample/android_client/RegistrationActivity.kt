@@ -57,13 +57,28 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
+        val userId = userid_edittext_register.text.toString()
+        val name = username_edittext_register.text.toString()
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
-        // emailまたはpasswordが空だとFirebase登録時にアプリが強制終了してしまうので
-        // emptyであるかどうかをチェックしている
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "EmailまたはPasswordを入力してください", Toast.LENGTH_SHORT).show()
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "UserIDを入力してください", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Nameを入力してください", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Emailを入力してください", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Passwordを入力してください", Toast.LENGTH_SHORT).show()
             return
         }
 
