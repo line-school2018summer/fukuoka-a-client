@@ -47,6 +47,19 @@ class CreateGroupActivity : AppCompatActivity() {
         delete_button_create_group.setOnClickListener {
             search_box_create_group.text.clear()
         }
+
+        groupAdapter.setOnItemClickListener { item, view ->
+            val sItem = item as SelectableUserItem
+            if (sItem.isSelected) {
+                selectedUsers.remove(sItem)
+                sItem.isSelected = false
+            } else {
+                selectedUsers.add(sItem)
+                sItem.isSelected = true
+            }
+            sItem.notifyChanged()
+            updateGuideTextview()
+        }
     }
 
     private fun updateGuideTextview() {
