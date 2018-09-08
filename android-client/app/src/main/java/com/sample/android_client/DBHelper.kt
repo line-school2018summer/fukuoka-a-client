@@ -4,63 +4,35 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import org.jetbrains.anko.db.*
 
-class UsersDBHelper(context: Context) : ManagedSQLiteOpenHelper(context, "localData.db", null, 1) {
+const val DATABASE_NAME = "local_data.db"
+const val DATABASE_VERSION = 1
+const val USERS_TABLE_NAME = "users"
+const val ROOMS_TABLE_NAME = "rooms"
+
+class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private var instance: UsersDBHelper? = null
+        private var instance: DBHelper? = null
+
         @Synchronized
-        fun getInstance(context: Context): UsersDBHelper {
+        fun getInstance(context: Context): DBHelper {
             if (instance == null) {
-                instance = UsersDBHelper(context.applicationContext)
+                instance = DBHelper(context.applicationContext)
             }
+
             return instance!!
         }
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.createTable("users", true,
+        db.createTable(USERS_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
                 "user_id" to INTEGER + UNIQUE + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
                 "icon_id" to INTEGER + UNIQUE,
                 "is_friend" to INTEGER + NOT_NULL)
-    }
 
-    override fun onUpgrade(db: SQLiteDatabase?, newVersion: Int, oldVersion: Int) {
-
-    }
-
-    fun saveUserData(userData: List<User>) {
-        this.use {
-            this.transaction {
-                userData.forEach {
-                    this.insert("users",
-                            "id" to it.id,
-                            "server_id" to it.serverId,
-                            "user_id" to it.userId,
-                            "name" to it.name,
-                            "icon_id" to it.iconId,
-                            "is_friend" to if (it.isFriend) 1 else 0)
-                }
-            }
-        }
-    }
-}
-
-class RoomsTableHelper(content: Context) : ManagedSQLiteOpenHelper(content, "localDate.db", null, 1) {
-    companion object {
-        private var instance: RoomsTableHelper? = null
-        @Synchronized
-        fun getInstance(context: Context): RoomsTableHelper {
-            if (instance == null) {
-                instance = RoomsTableHelper(context.applicationContext)
-            }
-            return instance!!
-        }
-    }
-
-    override fun onCreate(db: SQLiteDatabase) {
-        db.createTable("rooms", true,
+        db.createTable(ROOMS_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
                 "icon_id" to INTEGER + UNIQUE + NOT_NULL,
@@ -68,19 +40,6 @@ class RoomsTableHelper(content: Context) : ManagedSQLiteOpenHelper(content, "loc
                 "is_group" to INTEGER + NOT_NULL)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, newVersion: Int, oldVersion: Int) {
-
-    }
-
-    fun insertRoom(newRoom: Room) {
-        this.use {
-            this.insert("rooms",
-                    "server_id" to newRoom.serverId,
-                    "icon_id" to newRoom.iconId,
-                    "name" to newRoom.name,
-                    "is_group" to if (newRoom.isGroup) 1 else 0)
-        }
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
     }
 }
-
-data class Room(val serverId: Int, val iconId: Int, val name: String, val isGroup: Boolean)
