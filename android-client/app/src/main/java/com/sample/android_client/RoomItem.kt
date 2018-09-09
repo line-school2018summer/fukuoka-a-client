@@ -9,7 +9,7 @@ data class RoomItem(val roomId: Long,
                     val roomName: String,
                     val roomIconURI: String) : Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.user_name_textview_friends.text = roomName
+        viewHolder.user_name_textview_scroll.text = roomName
         // TODO : 相手のアイコンまたはグループアイコンを表示する
     }
 
