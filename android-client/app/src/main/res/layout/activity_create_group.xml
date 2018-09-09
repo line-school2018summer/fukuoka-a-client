@@ -123,6 +123,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circular_imageview_create_group"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="@+id/select_photo_button_create_group"

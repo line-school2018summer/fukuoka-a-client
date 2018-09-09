@@ -1,6 +1,10 @@
 package com.sample.android_client
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -12,9 +16,11 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_create_group.*
+import kotlinx.android.synthetic.main.activity_registration.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
 
 class CreateGroupActivity : AppCompatActivity() {
+    var selectedPhotoUri: Uri? = null
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
@@ -97,6 +103,26 @@ class CreateGroupActivity : AppCompatActivity() {
             sItem.notifyChanged()
             updateGuideTextview()
             updateScrollView()
+        }
+
+        select_photo_button_create_group.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // 画像選択に成功した場合
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+            // 選択した画像を円形に表示する(最初に表示されていた丸は邪魔になるので透明にしている)
+            select_photo_button_create_group.alpha = 0f
+            circular_imageview_create_group.setImageBitmap(bitmap)
         }
     }
 
