@@ -15,8 +15,6 @@ class TalkActivity : Activity() {
         setContentView(R.layout.activity_talk)
 
         val messages = mutableListOf<Message>()
-        messages.add(Message(1, 1, "Test1", LocalDateTime.now()))
-        messages.add(Message(2, 2, "Test1", LocalDateTime.now()))
 
         talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)

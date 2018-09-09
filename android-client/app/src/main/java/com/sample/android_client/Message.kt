@@ -1,5 +1,5 @@
 package com.sample.android_client
 
-import java.time.LocalDateTime
+import java.sql.Timestamp
 
-data class Message(val messageID: Int, val senderID: Int, val body: String, val sendTime: LocalDateTime)
+data class Message(val id: Int, val serverId: Int, val roomId: Int, val userId: Int, val body: String, val postedAt: Timestamp)

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import java.time.format.DateTimeFormatter
 
 class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
@@ -24,7 +23,7 @@ class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
     override fun getItemViewType(position: Int): Int {
 
         //TODO 送信者が自分以外であるかを判定するようにする
-        return when (messageList[position].senderID) {
+        return when (messageList[position].userId) {
             1 ->
                 R.layout.message_text_left
             2 ->
@@ -55,7 +54,7 @@ class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
 
         open fun bind(position: Int) {
             message.text = messages[position].body
-            sendTime.text = messages[position].sendTime.format(DateTimeFormatter.ofPattern("HH:MM"))
+            sendTime.text = messages[position].postedAt.toString()
         }
     }
 
