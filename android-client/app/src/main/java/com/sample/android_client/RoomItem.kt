@@ -5,9 +5,9 @@ import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_friend_friends.*
 
 
-data class RoomItem(val roomId: Long,
+data class RoomItem(val roomId: Int,
                     val roomName: String,
-                    val roomIconURI: String) : Item() {
+                    val roomIconId: Int) : Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.user_name_textview_scroll.text = roomName
         // TODO : 相手のアイコンまたはグループアイコンを表示する
