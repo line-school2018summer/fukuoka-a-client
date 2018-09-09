@@ -1,5 +1,6 @@
 package com.sample.android_client
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
@@ -12,11 +13,19 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Section
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_friends.*
-import java.util.*
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.rowParser
+import org.jetbrains.anko.db.select
 
 class FriendsFragment : Fragment() {
+    private lateinit var database: DBHelper
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        database = DBHelper.getInstance(activity!!.applicationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,13 +51,12 @@ class FriendsFragment : Fragment() {
             // このページ内でシュッっと画面が切り替わるようにしたほうがかっこいい
             // 文字を入力するたびリアルタイムで検索していくとかもかっこいいけど難しそう
         }
-
-
     }
 
     private fun displayGroupsAndFriends() {
-        val groups = generateDummyGroupsItems(3)
-        val friends = generateDummyFriendsItems(18)
+        val rooms = getRooms()
+        val groups = createGroupItems(rooms)
+        val friends = createFriendItems(rooms)
 
         recycler_view_friends.apply {
             layoutManager = GridLayoutManager(activity, groupAdapter.spanCount).apply {
@@ -76,19 +84,28 @@ class FriendsFragment : Fragment() {
 
     }
 
-    // ダミーのグループリストを作成
-    private fun generateDummyGroupsItems(number: Int): MutableList<RoomItem> {
-        val rnd = Random()
-        return MutableList(number) {
-            RoomItem(0,"group" + rnd.nextInt(256).toString(), "hoge")
+    private fun getRooms(): List<Room> {
+        var rooms = listOf<Room>()
+        database.use {
+            rooms = this.select(ROOMS_TABLE_NAME).exec {
+                val parser = rowParser { id: Int, serverId: Int, iconId: Int, name: String, isGroup: Int ->
+                    Room(id, serverId, iconId, name, isGroup == 1)
+                }
+                parseList(parser)
+            }
         }
+        return rooms
     }
 
-    // ダミーの友だちリストを作成
-    private fun generateDummyFriendsItems(number: Int): MutableList<RoomItem> {
-        val rnd = Random()
-        return MutableList(number) {
-            RoomItem(0,"user" + rnd.nextInt(256).toString(), "hoge")
-        }
+    private fun createGroupItems(groups: List<Room>): MutableList<RoomItem> {
+        return groups.filter { it.isGroup }
+                .map { it -> RoomItem(it.id, it.name, it.iconId) }
+                .toMutableList()
+    }
+
+    private fun createFriendItems(groups: List<Room>): MutableList<RoomItem> {
+        return groups.filter { !(it.isGroup) }
+                .map { it -> RoomItem(it.id, it.name, it.iconId) }
+                .toMutableList()
     }
 }
