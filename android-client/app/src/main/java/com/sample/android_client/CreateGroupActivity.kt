@@ -80,6 +80,11 @@ class CreateGroupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (selectedPhotoUri == null) {
+                Log.d("CreateGroupActivity", "アイコンが選択されていない")
+                // TODO: アイコンが選ばれていないときにデフォルトアイコンを設定する？
+            }
+
             // TODO: 選択されたユーザのリストで新しくグループを作ってサーバのDBに登録する処理
             // TODO: ローカルDBに登録する処理
 
