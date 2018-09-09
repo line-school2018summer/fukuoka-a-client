@@ -17,7 +17,7 @@
         android:hint="グループ名"
         android:inputType="text"
         android:paddingHorizontal="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/select_photo_button_create_group"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,7 @@
         android:hint="友達の名前を検索"
         android:inputType="textPersonName"
         android:paddingHorizontal="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/select_photo_button_create_group"
         app:layout_constraintStart_toEndOf="@+id/delete_button_create_group"
         app:layout_constraintTop_toBottomOf="@+id/group_name_edittext_create_group" />
 
@@ -107,6 +107,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/select_photo_button_create_group"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circular_button_create_group"
+        android:text="アイコンを選択"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/guide_textview_create_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="@+id/select_photo_button_create_group"
+        app:layout_constraintEnd_toEndOf="@+id/select_photo_button_create_group"
+        app:layout_constraintStart_toStartOf="@+id/select_photo_button_create_group"
+        app:layout_constraintTop_toTopOf="@+id/select_photo_button_create_group" />
 
 
 </android.support.constraint.ConstraintLayout>
