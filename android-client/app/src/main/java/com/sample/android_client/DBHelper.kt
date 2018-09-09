@@ -38,6 +38,19 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
                 "icon_id" to INTEGER  + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
                 "is_group" to INTEGER + NOT_NULL)
+
+        // デバッグ用データを追加
+        // TODO 今後削除する
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 0,
+                "icon_id" to 1,
+                "name" to "sample1",
+                "is_group" to 1)
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 1,
+                "icon_id" to 1,
+                "name" to "sample2",
+                "is_group" to 0)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
