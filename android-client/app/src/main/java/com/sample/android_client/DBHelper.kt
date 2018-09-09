@@ -29,13 +29,13 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
                 "user_id" to INTEGER + UNIQUE + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
-                "icon_id" to INTEGER + UNIQUE,
+                "icon_id" to INTEGER,
                 "is_friend" to INTEGER + NOT_NULL)
 
         db.createTable(ROOMS_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
-                "icon_id" to INTEGER + UNIQUE + NOT_NULL,
+                "icon_id" to INTEGER  + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
                 "is_group" to INTEGER + NOT_NULL)
     }
