@@ -21,10 +21,12 @@
         <activity
             android:name=".TalkActivity"
             android:label="@string/title_activity_talk" />
-        <activity android:name=".CreateGroupActivity">
+        <activity
+            android:name=".CreateGroupActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/>
+                android:value=".HomeActivity" />
         </activity>
     </application>
 
