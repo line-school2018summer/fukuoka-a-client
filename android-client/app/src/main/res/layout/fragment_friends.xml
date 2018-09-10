@@ -20,36 +20,27 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="友だちを検索"
         android:inputType="textPersonName"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        app:layout_constraintEnd_toStartOf="@+id/search_friends_button_friends"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/search_friends_button_friends"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="検索"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/create_group_button_friends"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/create_group_button_friends"
-        android:layout_width="0dp"
+        android:layout_width="70dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="グループを作成"
         android:textSize="8sp"
-        app:layout_constraintEnd_toStartOf="@+id/search_friends_edittext_friends"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_view_friends"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

@@ -61,7 +61,7 @@ class FriendsFragment : Fragment() {
             // 新しいアクティビティ(CreateGroupActivity)を作ってそこに飛ぶか
         }
 
-        search_friends_edittext_friends.addTextChangedListener(object: TextWatcher {
+        search_friends_edittext_friends.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 if (p0.isNullOrEmpty()) {
                     displayGroupsAndFriends()
@@ -76,11 +76,6 @@ class FriendsFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
         })
-
-        search_friends_button_friends.setOnClickListener {
-            val text = search_friends_edittext_friends.text.toString()
-            displaySearchedFriends(text)
-        }
 
         create_group_button_friends.setOnClickListener {
             val intent = Intent(activity, CreateGroupActivity::class.java)
