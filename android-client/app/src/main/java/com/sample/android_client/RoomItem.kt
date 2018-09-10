@@ -4,12 +4,18 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_friend_friends.*
 
+const val LIMIT_DISPLAY_NAME_LENGTH = 13
 
-data class RoomItem(val roomId: Long,
+data class RoomItem(val roomId: Int,
                     val roomName: String,
-                    val roomIconURI: String) : Item() {
+                    val roomIconId: Int) : Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.user_name_textview_scroll.text = roomName
+        viewHolder.user_name_textview_friends.text = if (roomName.length <= LIMIT_DISPLAY_NAME_LENGTH) {
+            roomName
+        } else {
+            roomName.substring(0..10) + ".."
+        }
+
         // TODO : 相手のアイコンまたはグループアイコンを表示する
     }
 

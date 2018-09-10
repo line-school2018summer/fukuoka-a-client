@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/user_icon_imageview_scroll"
+        android:id="@+id/user_icon_imageview_friends"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
@@ -19,7 +19,7 @@
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <TextView
-        android:id="@+id/user_name_textview_scroll"
+        android:id="@+id/user_name_textview_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -28,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:text="user_name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/user_icon_imageview_scroll"
-        app:layout_constraintStart_toStartOf="@+id/user_icon_imageview_scroll"
-        app:layout_constraintTop_toBottomOf="@+id/user_icon_imageview_scroll" />
+        app:layout_constraintEnd_toEndOf="@+id/user_icon_imageview_friends"
+        app:layout_constraintStart_toStartOf="@+id/user_icon_imageview_friends"
+        app:layout_constraintTop_toBottomOf="@+id/user_icon_imageview_friends" />
 </android.support.constraint.ConstraintLayout>
