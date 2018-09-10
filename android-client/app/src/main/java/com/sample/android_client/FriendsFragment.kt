@@ -39,6 +39,13 @@ class FriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        recycler_view_friends.apply {
+            layoutManager = GridLayoutManager(activity, groupAdapter.spanCount).apply {
+                spanSizeLookup = groupAdapter.spanSizeLookup
+            }
+            adapter = groupAdapter
+        }
+
         // 友達画面に遷移してきたときに一回だけやればOKのはず
         getRooms()
         createFriendItems()
@@ -59,21 +66,38 @@ class FriendsFragment : Fragment() {
             // アクティビティを分けて、そっちに遷移するようにするのが楽そうだけど
             // このページ内でシュッっと画面が切り替わるようにしたほうがかっこいい
             // 文字を入力するたびリアルタイムで検索していくとかもかっこいいけど難しそう
+            displaySearchedFriends(text)
         }
 
         create_group_button_friends.setOnClickListener {
             val intent = Intent(activity, CreateGroupActivity::class.java)
             startActivity(intent)
         }
+
+        groupAdapter.setOnItemClickListener { item, view ->
+            Log.d("FriendsFragment", item.toString())
+            // TODO: 選択したルームでのトークに遷移する
+        }
+    }
+
+    private fun displaySearchedFriends(keyword: String) {
+        if (keyword.isEmpty()) {
+            displayGroupsAndFriends()
+            return
+        }
+
+        groupAdapter.clear()
+
+        val searchedFriends = friends.filter { it.roomName.indexOf(keyword) >= 0 }
+
+        ExpandableGroup(ExpandableHeaderItem("個人間トーク"), true).apply {
+            add(Section(searchedFriends))
+            groupAdapter.add(this)
+        }
     }
 
     private fun displayGroupsAndFriends() {
-        recycler_view_friends.apply {
-            layoutManager = GridLayoutManager(activity, groupAdapter.spanCount).apply {
-                spanSizeLookup = groupAdapter.spanSizeLookup
-            }
-            adapter = groupAdapter
-        }
+        groupAdapter.clear()
 
         ExpandableGroup(ExpandableHeaderItem("グループトーク"), true).apply {
             add(Section(groups))
@@ -86,12 +110,6 @@ class FriendsFragment : Fragment() {
         }
 
         Log.d("FriendsFragment", groupAdapter.getItem(0).toString())
-
-        groupAdapter.setOnItemClickListener { item, view ->
-            Log.d("FriendsFragment", item.toString())
-            // TODO: 選択したルームでのトークに遷移する
-        }
-
     }
 
     private fun getRooms() {
