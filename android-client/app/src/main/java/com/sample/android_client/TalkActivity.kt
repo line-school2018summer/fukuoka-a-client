@@ -16,8 +16,6 @@ class TalkActivity : Activity() {
     val Context.database: DBHelper
         get() = DBHelper.getInstance(applicationContext)
 
-    private var messages = mutableListOf<Message>()
-
     // TODO Activity起動時に代入するように変更する
     private var roomId = 1
 
@@ -25,7 +23,7 @@ class TalkActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
-        messages = loadPastMessages()
+        val messages = mutableListOf<Message>()
         talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -39,14 +37,19 @@ class TalkActivity : Activity() {
         }
     }
 
+
     override fun onStart() {
         super.onStart()
-        messages = loadPastMessages()
-        talk_recycler_view.adapter?.notifyDataSetChanged()
+
+        val pastMessages = loadPastMessages()
+        val recyclerViewAdapter = talk_recycler_view.adapter as MessageRecyclerViewAdapter
+
+        recyclerViewAdapter.setMessages(pastMessages)
     }
 
-    private fun loadPastMessages(): MutableList<Message> {
-        var pastMessages = mutableListOf<Message>()
+    private fun loadPastMessages(): List<Message> {
+        var pastMessages = listOf<Message>()
+
         database.use {
             pastMessages = this.select(MESSAGES_TABLE_NAME)
                     .whereArgs("room_id = {roomId}", "roomId" to roomId)
@@ -55,7 +58,7 @@ class TalkActivity : Activity() {
                             Message(id, serverId, roomId, userId, body, toTimeStamp(postedAt))
                         }
                         parseList(parser)
-                    }.toMutableList()
+                    }
         }
         return pastMessages
     }

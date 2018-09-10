@@ -9,23 +9,32 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
+class MessageRecyclerViewAdapter(private val messages: MutableList<Message>)
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
 
-    private val messages: MutableList<Message> = messageList
+    fun setMessages(messages: List<Message>) {
+        this.messages.clear()
+        this.messages.addAll(messages)
+        notifyDataSetChanged()
+    }
+
+    fun addMessage(message: Message) {
+        messages.add(message)
+        notifyItemInserted(itemCount - 1)
+    }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.bind(position)
     }
 
     override fun getItemCount(): Int {
-        return messageList.size
+        return messages.size
     }
 
     override fun getItemViewType(position: Int): Int {
 
         //TODO 送信者が自分以外であるかを判定するようにする
-        return when (messageList[position].userId) {
+        return when (messages[position].userId) {
             1 ->
                 R.layout.message_text_right
             2 ->
