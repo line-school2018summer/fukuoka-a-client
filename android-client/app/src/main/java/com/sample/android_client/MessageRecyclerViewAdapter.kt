@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
@@ -53,8 +55,11 @@ class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
         private val sendTime: TextView = view.findViewById(R.id.send_time)
 
         open fun bind(position: Int) {
+            val dateFormat = SimpleDateFormat("HH:mm")
+            val formattedTime = dateFormat.format(Date(messages[position].postedAt.time))
+
             message.text = messages[position].body
-            sendTime.text = messages[position].postedAt.toString()
+            sendTime.text = formattedTime
         }
     }
 
