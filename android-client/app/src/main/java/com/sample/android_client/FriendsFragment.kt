@@ -76,6 +76,10 @@ class FriendsFragment : Fragment() {
             startActivity(intent)
         }
 
+        delete_button_friends.setOnClickListener {
+            search_friends_edittext_friends.text.clear()
+        }
+
         groupAdapter.setOnItemClickListener { item, view ->
             Log.d("FriendsFragment", item.toString())
             // TODO: 選択したルームでのトークに遷移する
