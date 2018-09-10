@@ -55,12 +55,6 @@ class FriendsFragment : Fragment() {
 
         displayGroupsAndFriends()
 
-        create_group_button_friends.setOnClickListener {
-            Log.d("FriendsFragment", "新しいグループを作成する")
-            // TODO: 新しいグループを作成する処理を書く
-            // 新しいアクティビティ(CreateGroupActivity)を作ってそこに飛ぶか
-        }
-
         search_friends_edittext_friends.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 if (p0.isNullOrEmpty()) {
