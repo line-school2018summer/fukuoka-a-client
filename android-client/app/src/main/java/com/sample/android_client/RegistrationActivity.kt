@@ -14,8 +14,9 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_registration.*
 import java.util.*
 
-class RegistrationActivity : AppCompatActivity() {
+const val LIMIT_USER_NAME_LENGTH = 20        // ユーザが登録できる名前の長さの限界
 
+class RegistrationActivity : AppCompatActivity() {
     var selectedPhotoUri: Uri? = null   // アイコンにするために選択した画像のURI
     var userUID: String? = null         // Firebaseで発行されるUID
 
@@ -57,15 +58,12 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performRegister() {
+        val userId = userid_edittext_register.text.toString()
+        val name = username_edittext_register.text.toString()
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
-        // emailまたはpasswordが空だとFirebase登録時にアプリが強制終了してしまうので
-        // emptyであるかどうかをチェックしている
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "EmailまたはPasswordを入力してください", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (!isValidInputData(userId, name, email, password)) return
 
         // FirebaseAuthを用いたアカウント作成
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -75,6 +73,11 @@ class RegistrationActivity : AppCompatActivity() {
                     // ユーザ登録に成功した場合
                     Log.d("RegisterActivity", "Successfully created user with uid: ${it.result.user.uid}")
                     userUID = it.result.user.uid
+
+                    if (selectedPhotoUri == null) {
+                        Log.d("RegistrationActivity", "アイコンが選択されていないのでデフォルトアイコンを設定する")
+                        // TODO: デフォルトアイコンを設定する
+                    }
 
                     // 登録したユーザアイコンをFirebaseのストレージに保存する
                     // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
@@ -89,6 +92,45 @@ class RegistrationActivity : AppCompatActivity() {
                     Toast.makeText(this, it.message.toString(), Toast.LENGTH_SHORT).show()
                 }
 
+    }
+
+    private fun isValidInputData(userId: String, name: String, email: String, password: String): Boolean {
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "UserIDを入力してください", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (isAlreadyRegistered(userId)) {
+            Toast.makeText(this, "このUserIDは既に登録されています", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Nameを入力してください", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (name.length > LIMIT_USER_NAME_LENGTH) {
+            Toast.makeText(this, "名前は${LIMIT_USER_NAME_LENGTH}文字以内にしてください", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Emailを入力してください", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Passwordを入力してください", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
+    }
+
+    private fun isAlreadyRegistered(userId: String): Boolean {
+        // TODO: サーバのDBにアクセスして、userIdが既に登録していないか確かめる
+        return false
     }
 
 
