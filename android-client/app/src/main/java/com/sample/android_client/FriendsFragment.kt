@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +60,22 @@ class FriendsFragment : Fragment() {
             // TODO: 新しいグループを作成する処理を書く
             // 新しいアクティビティ(CreateGroupActivity)を作ってそこに飛ぶか
         }
+
+        search_friends_edittext_friends.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0.isNullOrEmpty()) {
+                    displayGroupsAndFriends()
+                    return
+                }
+                displaySearchedFriends(p0.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
 
         search_friends_button_friends.setOnClickListener {
             val text = search_friends_edittext_friends.text.toString()
