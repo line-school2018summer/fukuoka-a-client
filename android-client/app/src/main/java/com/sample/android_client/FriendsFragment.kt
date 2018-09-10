@@ -23,6 +23,9 @@ class FriendsFragment : Fragment() {
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
+    private lateinit var rooms: List<Room>
+    private lateinit var friends: List<RoomItem>
+    private lateinit var groups: List<RoomItem>
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -35,6 +38,11 @@ class FriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 友達画面に遷移してきたときに一回だけやればOKのはず
+        getRooms()
+        createFriendItems()
+        createGroupItems()
 
         displayGroupsAndFriends()
 
@@ -60,10 +68,6 @@ class FriendsFragment : Fragment() {
     }
 
     private fun displayGroupsAndFriends() {
-        val rooms = getRooms()
-        val groups = createGroupItems(rooms)
-        val friends = createFriendItems(rooms)
-
         recycler_view_friends.apply {
             layoutManager = GridLayoutManager(activity, groupAdapter.spanCount).apply {
                 spanSizeLookup = groupAdapter.spanSizeLookup
@@ -90,8 +94,7 @@ class FriendsFragment : Fragment() {
 
     }
 
-    private fun getRooms(): List<Room> {
-        var rooms = listOf<Room>()
+    private fun getRooms() {
         database.use {
             rooms = this.select(ROOMS_TABLE_NAME).exec {
                 val parser = rowParser { id: Int, serverId: Int, iconId: Int, name: String, isGroup: Int ->
@@ -101,18 +104,15 @@ class FriendsFragment : Fragment() {
             }
         }
         Log.d("FriendsFragment", rooms.size.toString())
-        return rooms
     }
 
-    private fun createGroupItems(groups: List<Room>): MutableList<RoomItem> {
-        return groups.filter { it.isGroup }
+    private fun createGroupItems() {
+        groups = rooms.filter { it.isGroup }
                 .map { it -> RoomItem(it.id, it.name, it.iconId) }
-                .toMutableList()
     }
 
-    private fun createFriendItems(groups: List<Room>): MutableList<RoomItem> {
-        return groups.filter { !(it.isGroup) }
+    private fun createFriendItems() {
+        friends = rooms.filter { !(it.isGroup) }
                 .map { it -> RoomItem(it.id, it.name, it.iconId) }
-                .toMutableList()
     }
 }
