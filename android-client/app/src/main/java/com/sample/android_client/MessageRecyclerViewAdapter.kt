@@ -27,9 +27,9 @@ class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
         //TODO 送信者が自分以外であるかを判定するようにする
         return when (messageList[position].userId) {
             1 ->
-                R.layout.message_text_left
-            2 ->
                 R.layout.message_text_right
+            2 ->
+                R.layout.message_text_left
             else ->
                 throw RuntimeException()
         }
