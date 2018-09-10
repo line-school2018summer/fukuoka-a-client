@@ -28,7 +28,9 @@
                 android:value=".HomeActivity" />
         </activity>
 
-        <activity android:name=".CreateGroupActivity">
+        <activity
+            android:name=".CreateGroupActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
