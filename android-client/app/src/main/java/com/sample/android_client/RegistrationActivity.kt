@@ -14,6 +14,8 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_registration.*
 import java.util.*
 
+const val LIMIT_USER_NAME_LENGTH = 20        // ユーザが登録できる名前の長さの限界
+
 class RegistrationActivity : AppCompatActivity() {
     var selectedPhotoUri: Uri? = null   // アイコンにするために選択した画像のURI
     var userUID: String? = null         // Firebaseで発行されるUID
@@ -93,8 +95,6 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun isValidInputData(userId: String, name: String, email: String, password: String): Boolean {
-        val limitUserNameLength = 20        // ユーザが登録できる名前の長さの限界
-
         if (userId.isEmpty()) {
             Toast.makeText(this, "UserIDを入力してください", Toast.LENGTH_SHORT).show()
             return false
@@ -110,8 +110,8 @@ class RegistrationActivity : AppCompatActivity() {
             return false
         }
 
-        if (name.length > limitUserNameLength) {
-            Toast.makeText(this, "名前は${limitUserNameLength}文字以内にしてください", Toast.LENGTH_SHORT).show()
+        if (name.length > LIMIT_USER_NAME_LENGTH) {
+            Toast.makeText(this, "名前は${LIMIT_USER_NAME_LENGTH}文字以内にしてください", Toast.LENGTH_SHORT).show()
             return false
         }
 
