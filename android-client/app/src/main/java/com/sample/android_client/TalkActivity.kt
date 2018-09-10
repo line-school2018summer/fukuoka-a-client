@@ -25,8 +25,8 @@ class TalkActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
-        talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         messages = loadPastMessages()
+        talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         send_button_talk.setOnClickListener {
