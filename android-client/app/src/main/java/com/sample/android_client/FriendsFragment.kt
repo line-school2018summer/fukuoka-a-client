@@ -100,6 +100,7 @@ class FriendsFragment : Fragment() {
                 parseList(parser)
             }
         }
+        Log.d("FriendsFragment", rooms.size.toString())
         return rooms
     }
 
