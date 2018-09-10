@@ -61,11 +61,6 @@ class FriendsFragment : Fragment() {
 
         search_friends_button_friends.setOnClickListener {
             val text = search_friends_edittext_friends.text.toString()
-            Log.d("FriendsFragment", "文字列${text}を含むユーザーを検索する")
-            // TODO: 文字列textを含むユーザーを検索してリストアップする処理を書く
-            // アクティビティを分けて、そっちに遷移するようにするのが楽そうだけど
-            // このページ内でシュッっと画面が切り替わるようにしたほうがかっこいい
-            // 文字を入力するたびリアルタイムで検索していくとかもかっこいいけど難しそう
             displaySearchedFriends(text)
         }
 
@@ -108,8 +103,6 @@ class FriendsFragment : Fragment() {
             add(Section(friends))
             groupAdapter.add(this)
         }
-
-        Log.d("FriendsFragment", groupAdapter.getItem(0).toString())
     }
 
     private fun getRooms() {
@@ -121,7 +114,6 @@ class FriendsFragment : Fragment() {
                 parseList(parser)
             }
         }
-        Log.d("FriendsFragment", rooms.size.toString())
     }
 
     private fun createGroupItems() {
