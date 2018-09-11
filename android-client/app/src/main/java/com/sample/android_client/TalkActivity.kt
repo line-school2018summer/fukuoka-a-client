@@ -37,9 +37,8 @@ class TalkActivity : Activity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
         val pastMessages = loadPastMessages()
         val recyclerViewAdapter = talk_recycler_view.adapter as MessageRecyclerViewAdapter
