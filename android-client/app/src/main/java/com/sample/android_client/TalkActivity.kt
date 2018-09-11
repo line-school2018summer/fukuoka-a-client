@@ -51,11 +51,11 @@ class TalkActivity : Activity() {
         var pastMessages = listOf<Message>()
 
         database.use {
-            pastMessages = this.select(MESSAGES_TABLE_NAME)
+            pastMessages = this.select(MESSAGES_TABLE_NAME, "server_id", "room_id", "user_id", "body", "posted_at")
                     .whereArgs("room_id = {roomId}", "roomId" to roomId)
                     .exec {
-                        var parser = rowParser { id: Int, serverId: Int, roomId: Int, userId: Int, body: String, postedAt: String ->
-                            Message(id, serverId, roomId, userId, body, toTimeStamp(postedAt))
+                        var parser = rowParser { serverId: Int, roomId: Int, userId: Int, body: String, postedAt: String ->
+                            Message(serverId, roomId, userId, body, toTimeStamp(postedAt))
                         }
                         parseList(parser)
                     }
