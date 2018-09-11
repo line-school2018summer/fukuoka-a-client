@@ -64,6 +64,8 @@ dependencies {
 
     // https://github.com/hdodenhof/CircleImageView
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
