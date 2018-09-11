@@ -48,7 +48,8 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
                 "room_id" to INTEGER + NOT_NULL,
                 "user_id" to INTEGER + NOT_NULL,
                 "body" to TEXT + NOT_NULL,
-                "posted_at" to TEXT)
+                "posted_at" to TEXT + NOT_NULL)
+
 
         // デバッグ用データを追加
         // TODO 今後削除する
