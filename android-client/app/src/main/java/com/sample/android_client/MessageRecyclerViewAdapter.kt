@@ -6,29 +6,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
+class MessageRecyclerViewAdapter(private val messages: MutableList<Message>)
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
 
-    private val messages: MutableList<Message> = messageList
+    fun setMessages(messages: List<Message>) {
+        this.messages.clear()
+        this.messages.addAll(messages)
+        notifyDataSetChanged()
+    }
+
+    fun addMessage(message: Message) {
+        messages.add(message)
+        notifyItemInserted(itemCount - 1)
+    }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.bind(position)
     }
 
     override fun getItemCount(): Int {
-        return messageList.size
+        return messages.size
     }
 
     override fun getItemViewType(position: Int): Int {
 
         //TODO 送信者が自分以外であるかを判定するようにする
-        return when (messageList[position].senderID) {
+        return when (messages[position].userId) {
             1 ->
-                R.layout.message_text_left
-            2 ->
                 R.layout.message_text_right
+            2 ->
+                R.layout.message_text_left
             else ->
                 throw RuntimeException()
         }
@@ -54,8 +64,11 @@ class MessageRecyclerViewAdapter(private val messageList: MutableList<Message>)
         private val sendTime: TextView = view.findViewById(R.id.send_time)
 
         open fun bind(position: Int) {
+            val dateFormat = SimpleDateFormat("HH:mm")
+            val formattedTime = dateFormat.format(Date(messages[position].postedAt.time))
+
             message.text = messages[position].body
-            sendTime.text = messages[position].sendTime.format(DateTimeFormatter.ofPattern("HH:MM"))
+            sendTime.text = formattedTime
         }
     }
 
