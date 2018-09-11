@@ -84,6 +84,78 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
                 "user_id" to 2,
                 "body" to "this message was posted by someone other than me",
                 "posted_at" to Timestamp(Date().time).toString())
+      
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 2,
+                "icon_id" to 1,
+                "name" to "suzuki taro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 3,
+                "icon_id" to 1,
+                "name" to "suzuki jiro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 4,
+                "icon_id" to 1,
+                "name" to "suzuki saburo",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 5,
+                "icon_id" to 1,
+                "name" to "suzuki siro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 6,
+                "icon_id" to 1,
+                "name" to "honda taro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 7,
+                "icon_id" to 1,
+                "name" to "honda jiro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 8,
+                "icon_id" to 1,
+                "name" to "honda saburo",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 9,
+                "icon_id" to 1,
+                "name" to "honda siro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 10,
+                "icon_id" to 1,
+                "name" to "kawasaki taro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 11,
+                "icon_id" to 1,
+                "name" to "kawasaki jiro",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 12,
+                "icon_id" to 1,
+                "name" to "kawasaki saburo",
+                "is_group" to 0)
+
+        db.insert(ROOMS_TABLE_NAME,
+                "server_id" to 13,
+                "icon_id" to 1,
+                "name" to "kawasaki siro",
+                "is_group" to 0)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

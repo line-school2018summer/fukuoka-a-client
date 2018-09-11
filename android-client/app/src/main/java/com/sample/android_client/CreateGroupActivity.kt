@@ -1,6 +1,10 @@
 package com.sample.android_client
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -13,8 +17,10 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.activity_create_group.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
+import kotlinx.android.synthetic.main.item_user_scroll.*
 
 class CreateGroupActivity : AppCompatActivity() {
+    var selectedPhotoUri: Uri? = null
     val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
@@ -49,7 +55,7 @@ class CreateGroupActivity : AppCompatActivity() {
             adapter = hGroupAdapter
         }
 
-        search_box_create_group.addTextChangedListener(object: TextWatcher {
+        search_box_create_group.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 displaySearchedUser(p0.toString())
             }
@@ -72,6 +78,11 @@ class CreateGroupActivity : AppCompatActivity() {
             if (selectedUsers.isEmpty()) {
                 Toast.makeText(this, "選択されたユーザが存在しません", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
+            }
+
+            if (selectedPhotoUri == null) {
+                Log.d("CreateGroupActivity", "アイコンが選択されていない")
+                // TODO: アイコンが選ばれていないときにデフォルトアイコンを設定する？
             }
 
             // TODO: 選択されたユーザのリストで新しくグループを作ってサーバのDBに登録する処理
@@ -97,6 +108,26 @@ class CreateGroupActivity : AppCompatActivity() {
             sItem.notifyChanged()
             updateGuideTextview()
             updateScrollView()
+        }
+
+        select_photo_button_create_group.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // 画像選択に成功した場合
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+            // 選択した画像を円形に表示する(最初に表示されていた丸は邪魔になるので透明にしている)
+            select_photo_button_create_group.alpha = 0f
+            circular_imageview_create_group.setImageBitmap(bitmap)
         }
     }
 
@@ -149,7 +180,7 @@ class CreateGroupActivity : AppCompatActivity() {
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
-            viewHolder.user_name_textview_scroll.text = userName
+            viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
             // TODO : 友達のアイコンを表示する
         }
