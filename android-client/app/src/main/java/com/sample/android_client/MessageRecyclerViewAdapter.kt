@@ -9,8 +9,10 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MessageRecyclerViewAdapter(private val messages: MutableList<Message>)
+class MessageRecyclerViewAdapter()
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
+
+    val messages = mutableListOf<Message>()
 
     fun setMessages(messages: List<Message>) {
         this.messages.clear()
