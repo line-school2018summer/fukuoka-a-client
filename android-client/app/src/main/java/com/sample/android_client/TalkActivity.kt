@@ -19,14 +19,14 @@ class TalkActivity : Activity() {
 
     // TODO Activity起動時に代入するように変更する
     private var roomId = 1
-
     private val newMessages = mutableListOf<Message>()
+    private val talkAdapter = MessageRecyclerViewAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
-        talk_recycler_view.adapter = MessageRecyclerViewAdapter()
+        talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         send_button_talk.setOnClickListener {
@@ -49,9 +49,7 @@ class TalkActivity : Activity() {
 
         newMessages.clear()
         val pastMessages = loadPastMessages()
-        val recyclerViewAdapter = talk_recycler_view.adapter as MessageRecyclerViewAdapter
-
-        recyclerViewAdapter.setMessages(pastMessages)
+        talkAdapter.setMessages(pastMessages)
     }
 
     override fun onPause() {
