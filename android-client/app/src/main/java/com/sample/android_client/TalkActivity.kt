@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_talk.*
 import org.jetbrains.anko.db.*
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
+import java.util.*
 
 class TalkActivity : Activity() {
     val Context.database: DBHelper
@@ -33,6 +34,12 @@ class TalkActivity : Activity() {
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
             // 入力ボックスを空にする
+
+            // TODO デバッグ用、今後削除
+            val dummyMessage = createDummyMessage()
+            Log.d("TalkActivity", "userId = ${dummyMessage.userId} message=${dummyMessage.postedAt}")
+            newMessages.add(dummyMessage)
+
             input_message_box_talk.text.clear()
         }
     }
@@ -90,5 +97,13 @@ class TalkActivity : Activity() {
     private fun toTimeStamp(time: String): Timestamp {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
         return Timestamp(dateFormat.parse(time).time)
+    }
+
+    //TODO デバッグ用、今後削除
+    private fun createDummyMessage(): Message {
+        val timeStamp = Timestamp(Date().time)
+        val userId = if (Random().nextBoolean()) 1 else 2
+
+        return Message(1, roomId, userId, timeStamp.toString(), timeStamp)
     }
 }
