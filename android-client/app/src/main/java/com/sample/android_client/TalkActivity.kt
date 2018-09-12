@@ -18,14 +18,14 @@ class TalkActivity : Activity() {
 
     // TODO Activity起動時に代入するように変更する
     private var roomId = 1
-    private val messages = mutableListOf<Message>()
 
-    var newMessagesCount = 0
+    private val newMessages = mutableListOf<Message>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
+        val messages = mutableListOf<Message>()
         talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -33,8 +33,8 @@ class TalkActivity : Activity() {
             val message = input_message_box_talk.text.toString()
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
-            newMessagesCount++
             // 入力ボックスを空にする
+            newMessages.add(messages.last())
             input_message_box_talk.text.clear()
         }
     }
@@ -42,7 +42,7 @@ class TalkActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
-        newMessagesCount = 0
+        newMessages.clear()
         val pastMessages = loadPastMessages()
         val recyclerViewAdapter = talk_recycler_view.adapter as MessageRecyclerViewAdapter
 
@@ -51,12 +51,12 @@ class TalkActivity : Activity() {
 
     override fun onPause() {
         super.onPause()
-        Completable.fromAction { insertNewMessages(messages.takeLast(newMessagesCount)) }
+        Completable.fromAction { insertNewMessages(newMessages) }
                 .subscribeOn(Schedulers.io())
                 .subscribe()
     }
 
-    private fun insertNewMessages(newMessages: List<Message>) {
+    private fun insertNewMessages(newMessages: MutableList<Message>) {
         database.use {
             this.transaction {
                 newMessages.forEach {
