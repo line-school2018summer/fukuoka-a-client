@@ -25,8 +25,7 @@ class TalkActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
-        val messages = mutableListOf<Message>()
-        talk_recycler_view.adapter = MessageRecyclerViewAdapter(messages)
+        talk_recycler_view.adapter = MessageRecyclerViewAdapter()
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         send_button_talk.setOnClickListener {
@@ -34,7 +33,6 @@ class TalkActivity : Activity() {
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
             // 入力ボックスを空にする
-            newMessages.add(messages.last())
             input_message_box_talk.text.clear()
         }
     }
