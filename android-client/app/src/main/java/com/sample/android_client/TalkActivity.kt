@@ -51,6 +51,7 @@ class TalkActivity : Activity() {
         super.onPause()
         Completable.fromAction { insertNewMessages(newMessages) }
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .subscribe()
     }
 
