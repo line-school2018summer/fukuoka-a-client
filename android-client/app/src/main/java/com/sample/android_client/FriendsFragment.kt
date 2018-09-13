@@ -82,11 +82,11 @@ class FriendsFragment : Fragment() {
             search_friends_edittext_friends.text.clear()
         }
 
-        groupAdapter.setOnItemClickListener { item, view ->
+        groupAdapter.setOnItemClickListener { item, _ ->
             Log.d("FriendsFragment", item.toString())
 
             val roomId = (item as RoomItem).roomId
-            var intent = Intent(activity, TalkActivity::class.java)
+            val intent = Intent(activity, TalkActivity::class.java)
             intent.putExtra(EXTRA_ROOM_ID, roomId)
 
             startActivity(intent)
