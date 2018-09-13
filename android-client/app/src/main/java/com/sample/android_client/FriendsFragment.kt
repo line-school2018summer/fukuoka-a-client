@@ -20,6 +20,8 @@ import org.jetbrains.anko.db.parseList
 import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
 
+const val EXTRA_ROOM_ID = "roomId"
+
 class FriendsFragment : Fragment() {
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
@@ -48,8 +50,6 @@ class FriendsFragment : Fragment() {
             }
             adapter = groupAdapter
         }
-
-        // 友達画面に遷移してきたときに一回だけやればOKのはず
 
         val rooms = loadRooms()
         friends = rooms.filter { it.isGroup }.map { it.toRoomItem() }
@@ -84,7 +84,12 @@ class FriendsFragment : Fragment() {
 
         groupAdapter.setOnItemClickListener { item, view ->
             Log.d("FriendsFragment", item.toString())
-            // TODO: 選択したルームでのトークに遷移する
+
+            val roomId = (item as RoomItem).roomId
+            var intent = Intent(activity, TalkActivity::class.java)
+            intent.putExtra(EXTRA_ROOM_ID, roomId)
+
+            startActivity(intent)
         }
     }
 
