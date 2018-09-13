@@ -27,6 +27,10 @@ class TalkActivity : Activity() {
         setContentView(R.layout.activity_talk)
 
         roomId = intent.getIntExtra(EXTRA_ROOM_ID, -1)
+        if (roomId == -1) {
+            RuntimeException("ルームIdが取得できませんでした")
+        }
+
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         send_button_talk.setOnClickListener {
