@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_talk.*
 import org.jetbrains.anko.db.*
@@ -37,7 +39,18 @@ class TalkActivity : Activity() {
             val message = input_message_box_talk.text.toString()
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
-            // 入力ボックスを空にする
+
+            FirebaseUtil().getIdToken()
+                    .subscribeOn(Schedulers.io())
+                    .subscribeBy(
+                            onNext = { idToken ->
+                                Log.d("TalkActivity", idToken)
+                                // ここで送信処理をする?
+                            },
+                            onError = {
+                                Log.d("TalkActivity", it.toString())
+                            }
+                    )
 
             // TODO デバッグ用、今後削除
             val dummyMessage = createDummyMessage()
