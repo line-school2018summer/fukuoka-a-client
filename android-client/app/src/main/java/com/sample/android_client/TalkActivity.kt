@@ -18,7 +18,7 @@ class TalkActivity : Activity() {
         get() = DBHelper.getInstance(applicationContext)
 
     // TODO Activity起動時に代入するように変更する
-    private var roomId = 1
+    private var roomId = -1
     private val newMessages = mutableListOf<Message>()
     private val talkAdapter = MessageRecyclerViewAdapter()
 
@@ -26,9 +26,13 @@ class TalkActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
+        roomId = intent.getIntExtra(EXTRA_ROOM_ID, -1)
+        if (roomId == -1) {
+            RuntimeException("ルームIdが取得できませんでした")
+        }
+
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
         send_button_talk.setOnClickListener {
             val message = input_message_box_talk.text.toString()
             Log.d("TalkActivity", "文字列${message}を送信する")

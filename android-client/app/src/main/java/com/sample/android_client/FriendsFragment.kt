@@ -20,12 +20,15 @@ import org.jetbrains.anko.db.parseList
 import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
 
+const val EXTRA_ROOM_ID = "roomId"
+
 class FriendsFragment : Fragment() {
-    private lateinit var database: DBHelper
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
-    private lateinit var rooms: List<Room>
+
+    private lateinit var database: DBHelper
+
     private lateinit var friends: List<RoomItem>
     private lateinit var groups: List<RoomItem>
 
@@ -48,10 +51,9 @@ class FriendsFragment : Fragment() {
             adapter = groupAdapter
         }
 
-        // 友達画面に遷移してきたときに一回だけやればOKのはず
-        getRooms()
-        createFriendItems()
-        createGroupItems()
+        val rooms = loadRooms()
+        friends = rooms.filter { !(it.isGroup) }.map { it.toRoomItem() }
+        groups = rooms.filter { it.isGroup }.map { it.toRoomItem() }
 
         displayGroupsAndFriends()
 
@@ -80,9 +82,14 @@ class FriendsFragment : Fragment() {
             search_friends_edittext_friends.text.clear()
         }
 
-        groupAdapter.setOnItemClickListener { item, view ->
+        groupAdapter.setOnItemClickListener { item, _ ->
             Log.d("FriendsFragment", item.toString())
-            // TODO: 選択したルームでのトークに遷移する
+
+            val roomId = (item as RoomItem).roomId
+            val intent = Intent(activity, TalkActivity::class.java)
+            intent.putExtra(EXTRA_ROOM_ID, roomId)
+
+            startActivity(intent)
         }
     }
 
@@ -116,24 +123,14 @@ class FriendsFragment : Fragment() {
         }
     }
 
-    private fun getRooms() {
-        database.use {
-            rooms = this.select(ROOMS_TABLE_NAME).exec {
+    private fun loadRooms(): List<Room> {
+        return database.use {
+            this.select(ROOMS_TABLE_NAME).exec {
                 val parser = rowParser { id: Int, serverId: Int, iconId: Int, name: String, isGroup: Int ->
                     Room(id, serverId, iconId, name, isGroup == 1)
                 }
                 parseList(parser)
             }
         }
-    }
-
-    private fun createGroupItems() {
-        groups = rooms.filter { it.isGroup }
-                .map { it -> RoomItem(it.id, it.name, it.iconId) }
-    }
-
-    private fun createFriendItems() {
-        friends = rooms.filter { !(it.isGroup) }
-                .map { it -> RoomItem(it.id, it.name, it.iconId) }
     }
 }
