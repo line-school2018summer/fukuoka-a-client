@@ -44,6 +44,17 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "Successfully login with email/password: $email/****")
                     Toast.makeText(this, "ログインしました！", Toast.LENGTH_SHORT).show()
 
+                    // idTokenの取得
+                    var idToken: String? = null
+
+                    FirebaseAuth.getInstance()
+                            .currentUser
+                            ?.getIdToken(true)
+                            ?.addOnSuccessListener {
+                                idToken = it.token
+                                Log.d("LoginActivity", "idToken:" + idToken)
+                            }
+
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                 }
