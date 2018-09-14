@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_talk.*
@@ -38,6 +39,9 @@ class TalkActivity : Activity() {
             Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
             // 入力ボックスを空にする
+
+            val idToken = FirebaseUtil().getIdToken() ?: return@setOnClickListener
+            Log.d("TalkActivity", idToken)
 
             // TODO デバッグ用、今後削除
             val dummyMessage = createDummyMessage()

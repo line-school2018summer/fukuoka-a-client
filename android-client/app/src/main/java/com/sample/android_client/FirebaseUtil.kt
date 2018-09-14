@@ -1,5 +1,6 @@
 package com.sample.android_client
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 
 class FirebaseUtil {
@@ -8,9 +9,12 @@ class FirebaseUtil {
         var idToken: String? = null
 
         loginUser.getIdToken(true)
-                ?.addOnCompleteListener {
-                    if (!it.isSuccessful) return@addOnCompleteListener
-                    idToken = it.result.token
+                .addOnSuccessListener {
+                    Log.d("FirebaseUtil", it.token)
+                    idToken = it.token
+                }
+                .addOnFailureListener {
+                    Log.d("FirebaseUtil", it.toString())
                 }
 
         return idToken
