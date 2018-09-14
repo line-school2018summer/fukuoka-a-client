@@ -1,22 +1,30 @@
 package com.sample.android_client
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import io.reactivex.Observable
 
 class FirebaseUtil {
-    fun getIdToken(): String? {
-        val loginUser = FirebaseAuth.getInstance().currentUser ?: return null
-        var idToken: String? = null
+    fun getIdToken(): Observable<String> =
+            Observable.create<String> { emitter ->
+                val loginUser = FirebaseAuth.getInstance().currentUser
 
-        loginUser.getIdToken(true)
-                .addOnSuccessListener {
-                    Log.d("FirebaseUtil", it.token)
-                    idToken = it.token
-                }
-                .addOnFailureListener {
-                    Log.d("FirebaseUtil", it.toString())
+                if (loginUser == null) {
+                    emitter.onError(RuntimeException("Can't get current user."))
+                    return@create
                 }
 
-        return idToken
-    }
+                loginUser.getIdToken(true)
+                        .addOnSuccessListener {
+                            val idToken = it.token
+                            if (idToken == null) {
+                                emitter.onError(RuntimeException("idToken is null."))
+                                return@addOnSuccessListener
+                            }
+                            emitter.onNext(idToken)
+                            emitter.onComplete()
+                        }
+                        .addOnFailureListener {
+                            emitter.onError(it)
+                        }
+            }
 }
