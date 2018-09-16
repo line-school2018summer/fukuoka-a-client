@@ -9,7 +9,7 @@ import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MessageRecyclerViewAdapter()
+class MessageRecyclerViewAdapter
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
 
     private val messages = mutableListOf<Message>()
@@ -20,15 +20,9 @@ class MessageRecyclerViewAdapter()
         notifyDataSetChanged()
     }
 
-    fun addMessages(newMessages: Sequence<Message>) {
-        var messages = newMessages.toList()
-        this.messages.addAll(messages)
-        notifyItemRangeInserted(itemCount - messages.size, newMessages.count())
-    }
-
-    fun addMessage(message: Message) {
-        messages.add(message)
-        notifyItemInserted(itemCount)
+    fun insertNewMessages(newMessages: Sequence<Message>) {
+        this.messages.addAll(newMessages)
+        notifyItemRangeInserted(itemCount - newMessages.count(), newMessages.count())
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {

@@ -70,10 +70,11 @@ class TalkActivity : RxActivity() {
         talkAdapter.setMessages(pastMessages)
         talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
 
+
         fetchNewMessages().subscribeBy(
                 onNext = {
                     newMessages.addAll(it)
-                    talkAdapter.addMessages(it)
+                    talkAdapter.insertNewMessages(it)
 
                     talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
                 }
@@ -86,7 +87,6 @@ class TalkActivity : RxActivity() {
 
         insertNewMessages()?.subscribe()
     }
-
 
     private fun insertNewMessages(): Completable? {
         if (newMessages.size == 0) {
@@ -116,11 +116,10 @@ class TalkActivity : RxActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap { serverAPI.fetchAllMessages() }
-                .distinct { it.size }
                 .map {
                     it.asSequence()
                             .filter { it.roomId == roomId }
-                            .drop(newMessages.size + talkAdapter.itemCount)
+                            .drop(talkAdapter.itemCount)
                             .map { it.toMessage() }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
