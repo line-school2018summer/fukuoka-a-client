@@ -1,11 +1,16 @@
 package com.sample.android_client
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import com.trello.rxlifecycle2.android.ActivityEvent
+import com.trello.rxlifecycle2.components.RxActivity
+import com.trello.rxlifecycle2.kotlin.bindUntilEvent
 import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.rxkotlin.toCompletable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_talk.*
@@ -16,10 +21,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
-class TalkActivity : Activity() {
+class TalkActivity : RxActivity() {
     private val Context.database: DBHelper
         get() = DBHelper.getInstance(applicationContext)
+
+    private val serverAPI = Retrofit.Builder()
+            .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ServerAPI::class.java)
 
     // TODO Activity起動時に代入するように変更する
     private var roomId = 1
@@ -57,6 +70,15 @@ class TalkActivity : Activity() {
         talkAdapter.setMessages(pastMessages)
         talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
 
+        fetchNewMessages().subscribeBy(
+                onNext = {
+                    newMessages.addAll(it)
+                    talkAdapter.addMessages(it)
+
+                    talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
+                }
+        )
+
     }
 
     override fun onPause() {
@@ -86,6 +108,22 @@ class TalkActivity : Activity() {
             }
         }.toCompletable().subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
 
+    }
+
+    private fun fetchNewMessages(): Observable<Sequence<Message>> {
+        return Observable.interval(1, TimeUnit.SECONDS)
+                .bindUntilEvent(this, ActivityEvent.PAUSE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap { serverAPI.fetchAllMessages() }
+                .distinct { it.size }
+                .map {
+                    it.asSequence()
+                            .filter { it.roomId == roomId }
+                            .drop(newMessages.size + talkAdapter.itemCount)
+                            .map { it.toMessage() }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun loadPastMessages(): List<Message> {

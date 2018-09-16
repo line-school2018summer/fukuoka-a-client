@@ -12,7 +12,7 @@ import java.util.*
 class MessageRecyclerViewAdapter()
     : RecyclerView.Adapter<MessageRecyclerViewAdapter.BaseViewHolder>() {
 
-    val messages = mutableListOf<Message>()
+    private val messages = mutableListOf<Message>()
 
     fun setMessages(messages: List<Message>) {
         this.messages.clear()
@@ -20,9 +20,15 @@ class MessageRecyclerViewAdapter()
         notifyDataSetChanged()
     }
 
+    fun addMessages(newMessages: Sequence<Message>) {
+        var messages = newMessages.toList()
+        this.messages.addAll(messages)
+        notifyItemRangeInserted(itemCount - messages.size, newMessages.count())
+    }
+
     fun addMessage(message: Message) {
         messages.add(message)
-        notifyItemInserted(itemCount - 1)
+        notifyItemInserted(itemCount)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
