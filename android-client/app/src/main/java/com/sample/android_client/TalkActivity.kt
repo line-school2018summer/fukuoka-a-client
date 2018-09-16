@@ -6,15 +6,19 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import io.reactivex.Completable
+import io.reactivex.rxkotlin.toCompletable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_talk.*
 import org.jetbrains.anko.db.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TalkActivity : Activity() {
-    val Context.database: DBHelper
+    private val Context.database: DBHelper
         get() = DBHelper.getInstance(applicationContext)
 
     // TODO Activity起動時に代入するように変更する
@@ -48,32 +52,40 @@ class TalkActivity : Activity() {
         super.onResume()
 
         newMessages.clear()
+
         val pastMessages = loadPastMessages()
         talkAdapter.setMessages(pastMessages)
+        talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
+
     }
 
     override fun onPause() {
         super.onPause()
-        Completable.fromAction { insertNewMessages(newMessages) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe()
+
+        insertNewMessages()?.subscribe()
     }
 
-    private fun insertNewMessages(newMessages: MutableList<Message>) {
-        database.use {
-            this.transaction {
-                newMessages.forEach {
-                    this.insert(MESSAGES_TABLE_NAME,
-                            "server_id" to it.serverId,
-                            "room_id" to it.roomId,
-                            "user_id" to it.userId,
-                            "body" to it.body,
-                            "posted_at" to it.postedAt.toString())
 
+    private fun insertNewMessages(): Completable? {
+        if (newMessages.size == 0) {
+            return null
+        }
+
+        return {
+            database.use {
+                this.transaction {
+                    newMessages.forEach {
+                        this.insert(MESSAGES_TABLE_NAME,
+                                "server_id" to it.serverId,
+                                "room_id" to it.roomId,
+                                "user_id" to it.userId,
+                                "body" to it.body,
+                                "posted_at" to it.postedAt.toString())
+                    }
                 }
             }
-        }
+        }.toCompletable().subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
+
     }
 
     private fun loadPastMessages(): List<Message> {
