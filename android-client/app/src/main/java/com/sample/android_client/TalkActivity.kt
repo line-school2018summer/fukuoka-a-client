@@ -73,9 +73,12 @@ class TalkActivity : RxActivity() {
 
         fetchNewMessages()
                 .observeOn(AndroidSchedulers.mainThread())
-                .retryWhen { _ ->
-                    Toast.makeText(applicationContext, "Can't fetch new message...", Toast.LENGTH_SHORT).show()
-                    Observable.timer(3, TimeUnit.SECONDS)
+                .retryWhen {
+                    it.flatMap {
+                        Toast.makeText(applicationContext, "Can't fetch new message...", Toast.LENGTH_SHORT).show()
+                        Observable.timer(3, TimeUnit.SECONDS)
+                    }
+
                 }
                 .subscribeBy(
                         onNext = { fetchedMessages ->
