@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.widget.Toast
 import com.trello.rxlifecycle2.android.ActivityEvent
 import com.trello.rxlifecycle2.components.RxActivity
 import com.trello.rxlifecycle2.kotlin.bindUntilEvent
@@ -70,16 +71,20 @@ class TalkActivity : RxActivity() {
         talkAdapter.setMessages(pastMessages)
         talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
 
-
-        fetchNewMessages().subscribeBy(
-                onNext = {
-                    newMessages.addAll(it)
-                    talkAdapter.insertNewMessages(it)
-
-                    talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
+        fetchNewMessages()
+                .observeOn(AndroidSchedulers.mainThread())
+                .retryWhen { _ ->
+                    Toast.makeText(applicationContext, "Can't fetch new message...", Toast.LENGTH_SHORT).show()
+                    Observable.timer(3, TimeUnit.SECONDS)
                 }
-        )
+                .subscribeBy(
+                        onNext = { fetchedMessages ->
+                            this.newMessages.addAll(fetchedMessages)
+                            talkAdapter.insertNewMessages(fetchedMessages)
 
+                            talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
+                        }
+                )
     }
 
     override fun onPause() {
@@ -122,7 +127,6 @@ class TalkActivity : RxActivity() {
                             .drop(talkAdapter.itemCount)
                             .map { it.toMessage() }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
     }
 
     private fun loadPastMessages(): List<Message> {
