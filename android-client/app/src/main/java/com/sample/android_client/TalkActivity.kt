@@ -41,6 +41,7 @@ class TalkActivity : RxActivity() {
             .build()
             .create(ServerAPI::class.java)
 
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,9 @@ class TalkActivity : RxActivity() {
             RuntimeException("ルームIdが取得できませんでした")
 
         }
+
+        FirebaseUtil().getIdToken().subscribe { token = it }
+        Log.d("TalkActivity", token)
 
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -147,7 +151,7 @@ class TalkActivity : RxActivity() {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .bindUntilEvent(this, ActivityEvent.PAUSE)
                 .subscribeOn(Schedulers.io())
-                .flatMap { serverAPI.fetchAllMessages() }
+                .flatMap { serverAPI.fetchAllMessages(token) }
                 .map {
                     it.asSequence()
                             .filter { it.roomId == roomServerId }
