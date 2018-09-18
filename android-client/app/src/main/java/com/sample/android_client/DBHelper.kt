@@ -3,8 +3,6 @@ package com.sample.android_client
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import org.jetbrains.anko.db.*
-import java.sql.Timestamp
-import java.util.*
 
 const val DATABASE_NAME = "local_data.db"
 const val DATABASE_VERSION = 1
@@ -65,27 +63,6 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
                 "name" to "sample2",
                 "is_group" to 0)
 
-        db.insert(MESSAGES_TABLE_NAME,
-                "server_id" to 0,
-                "room_id" to 0,
-                "user_id" to 1,
-                "body" to "this message was posted other room",
-                "posted_at" to Timestamp(Date().time).toString())
-
-        db.insert(MESSAGES_TABLE_NAME,
-                "server_id" to 1,
-                "room_id" to 1,
-                "user_id" to 1,
-                "body" to "this message was posted by yours",
-                "posted_at" to Timestamp(Date().time).toString())
-
-        db.insert(MESSAGES_TABLE_NAME,
-                "server_id" to 2,
-                "room_id" to 1,
-                "user_id" to 2,
-                "body" to "this message was posted by someone other than me",
-                "posted_at" to Timestamp(Date().time).toString())
-      
         db.insert(ROOMS_TABLE_NAME,
                 "server_id" to 2,
                 "icon_id" to 1,
