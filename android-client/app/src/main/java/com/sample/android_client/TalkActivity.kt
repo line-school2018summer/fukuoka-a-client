@@ -52,7 +52,7 @@ class TalkActivity : Activity() {
             val message = input_message_box_talk.text.toString()
             // TODO: message送信処理
 
-            if (message.isNotEmpty())
+            if (message.isNotEmpty()) {
                 FirebaseUtil().getIdToken()
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
@@ -74,6 +74,7 @@ class TalkActivity : Activity() {
                                     }
                                 }
                         )
+            }
         }
     }
 
