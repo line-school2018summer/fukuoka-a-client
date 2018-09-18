@@ -114,7 +114,7 @@ class TalkActivity : RxActivity() {
                     }
                 }
             }
-        }.toCompletable().subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
+        }.toCompletable().subscribeOn(Schedulers.io())
 
     }
 
@@ -122,7 +122,6 @@ class TalkActivity : RxActivity() {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .bindUntilEvent(this, ActivityEvent.PAUSE)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .flatMap { serverAPI.fetchAllMessages() }
                 .map {
                     it.asSequence()
