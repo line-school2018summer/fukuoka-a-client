@@ -82,7 +82,7 @@ class TalkActivity : RxActivity() {
                 }
                 .subscribeBy(
                         onNext = { fetchedMessages ->
-                            this.newMessages.addAll(fetchedMessages)
+                            newMessages.addAll(fetchedMessages)
                             talkAdapter.insertNewMessages(fetchedMessages)
 
                             talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
