@@ -21,6 +21,7 @@ import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
 
 const val EXTRA_ROOM_ID = "roomId"
+const val EXTRA_ROOM_SERVER_ID = "roomServerId"
 
 class FriendsFragment : Fragment() {
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
@@ -52,8 +53,8 @@ class FriendsFragment : Fragment() {
         }
 
         val rooms = loadRooms()
-        friends = rooms.filter { !(it.isGroup) }.map { it.toRoomItem() }
-        groups = rooms.filter { it.isGroup }.map { it.toRoomItem() }
+        friends = rooms.asSequence().filter { !(it.isGroup) }.map { it.toRoomItem() }.toList()
+        groups = rooms.asSequence().filter { it.isGroup }.map { it.toRoomItem() }.toList()
 
         displayGroupsAndFriends()
 
@@ -86,8 +87,10 @@ class FriendsFragment : Fragment() {
             Log.d("FriendsFragment", item.toString())
 
             val roomId = (item as RoomItem).roomId
+            val roomServerId = item.roomServerId
             val intent = Intent(activity, TalkActivity::class.java)
             intent.putExtra(EXTRA_ROOM_ID, roomId)
+            intent.putExtra(EXTRA_ROOM_SERVER_ID, roomServerId)
 
             startActivity(intent)
         }

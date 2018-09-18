@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.item_friend_friends.*
 const val LIMIT_DISPLAY_NAME_LENGTH = 13
 
 data class RoomItem(val roomId: Int,
+                    val roomServerId: Int,
                     val roomName: String,
                     val roomIconId: Int) : Item() {
     override fun bind(viewHolder: ViewHolder, position: Int) {

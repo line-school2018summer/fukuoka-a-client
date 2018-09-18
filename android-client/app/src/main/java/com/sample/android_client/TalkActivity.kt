@@ -30,6 +30,7 @@ class TalkActivity : RxActivity() {
 
     // TODO Activity起動時に代入するように変更する
     private var roomId = -1
+    private var roomServerId = -1
     private val newMessages = mutableListOf<Message>()
     private val talkAdapter = MessageRecyclerViewAdapter()
 
@@ -46,8 +47,11 @@ class TalkActivity : RxActivity() {
         setContentView(R.layout.activity_talk)
 
         roomId = intent.getIntExtra(EXTRA_ROOM_ID, -1)
-        if (roomId == -1) {
+        roomServerId = intent.getIntExtra(EXTRA_ROOM_SERVER_ID, -1)
+
+        if (roomId == -1 || roomServerId == -1) {
             RuntimeException("ルームIdが取得できませんでした")
+
         }
 
         talk_recycler_view.adapter = talkAdapter
@@ -57,7 +61,7 @@ class TalkActivity : RxActivity() {
             // TODO: message送信処理
 
             if (message.isNotEmpty()) {
-                serverAPI.postNewMessage(1, roomId, message)
+                serverAPI.postNewMessage(1, roomServerId, message)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(
@@ -146,7 +150,7 @@ class TalkActivity : RxActivity() {
                 .flatMap { serverAPI.fetchAllMessages() }
                 .map {
                     it.asSequence()
-                            .filter { it.roomId == roomId }
+                            .filter { it.roomId == roomServerId }
                             .drop(talkAdapter.itemCount)
                             .map { it.toMessage() }
                 }
