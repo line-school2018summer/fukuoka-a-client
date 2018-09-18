@@ -93,10 +93,10 @@ class TalkActivity : RxActivity() {
     override fun onPause() {
         super.onPause()
 
-        insertNewMessages()?.subscribe()
+        saveNewMessages()?.subscribe()
     }
 
-    private fun insertNewMessages(): Completable? {
+    private fun saveNewMessages(): Completable? {
         if (newMessages.size == 0) {
             return null
         }
