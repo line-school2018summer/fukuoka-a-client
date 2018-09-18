@@ -77,6 +77,7 @@ dependencies {
 
     implementation "android.arch.core:runtime:1.1.1"
     implementation "android.arch.core:common:1.1.1"
-}
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'}
 
 apply plugin: 'com.google.gms.google-services'

@@ -19,6 +19,7 @@ import org.jetbrains.anko.db.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.SocketTimeoutException
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,29 +37,56 @@ class TalkActivity : RxActivity() {
             .create(ServerAPI::class.java)
 
     // TODO Activity起動時に代入するように変更する
-    private var roomId = 1
+    private var roomId = -1
     private val newMessages = mutableListOf<Message>()
     private val talkAdapter = MessageRecyclerViewAdapter()
+
+    private val serverAPI = Retrofit.Builder()
+            .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ServerAPI::class.java)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
+        roomId = intent.getIntExtra(EXTRA_ROOM_ID, -1)
+        if (roomId == -1) {
+            RuntimeException("ルームIdが取得できませんでした")
+        }
+
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-
         send_button_talk.setOnClickListener {
             val message = input_message_box_talk.text.toString()
-            Log.d("TalkActivity", "文字列${message}を送信する")
             // TODO: message送信処理
-            // 入力ボックスを空にする
 
-            // TODO デバッグ用、今後削除
-            val dummyMessage = createDummyMessage()
-            Log.d("TalkActivity", "userId = ${dummyMessage.userId} message=${dummyMessage.postedAt}")
-            newMessages.add(dummyMessage)
-
-            input_message_box_talk.text.clear()
+            if (message.isNotEmpty()) {
+                FirebaseUtil().getIdToken()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .flatMap {
+                            serverAPI.postNewMessage(1, roomId, message)
+                        }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy(
+                                onNext = {
+                                    input_message_box_talk.text.clear()
+                                },
+                                onError = {
+                                    Log.d("TalkActivity", it.toString())
+                                    if (it is SocketTimeoutException) {
+                                        Toast.makeText(applicationContext, "メッセージの送信に失敗しました", Toast.LENGTH_LONG).show()
+                                        Log.d("TalkActivity", "送信に失敗")
+                                    } else {
+                                        throw it
+                                    }
+                                }
+                        )
+            }
         }
     }
 
@@ -155,13 +183,5 @@ class TalkActivity : RxActivity() {
     private fun toTimeStamp(time: String): Timestamp {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
         return Timestamp(dateFormat.parse(time).time)
-    }
-
-    //TODO デバッグ用、今後削除
-    private fun createDummyMessage(): Message {
-        val timeStamp = Timestamp(Date().time)
-        val userId = if (Random().nextBoolean()) 1 else 2
-
-        return Message(1, roomId, userId, timeStamp.toString(), timeStamp)
     }
 }
