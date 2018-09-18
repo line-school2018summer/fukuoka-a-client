@@ -29,13 +29,6 @@ class TalkActivity : RxActivity() {
     private val Context.database: DBHelper
         get() = DBHelper.getInstance(applicationContext)
 
-    private val serverAPI = Retrofit.Builder()
-            .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ServerAPI::class.java)
-
     // TODO Activity起動時に代入するように変更する
     private var roomId = -1
     private val newMessages = mutableListOf<Message>()
