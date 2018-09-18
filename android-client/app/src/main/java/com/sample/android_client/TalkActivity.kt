@@ -22,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.SocketTimeoutException
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class TalkActivity : RxActivity() {
@@ -58,12 +57,8 @@ class TalkActivity : RxActivity() {
             // TODO: message送信処理
 
             if (message.isNotEmpty()) {
-                FirebaseUtil().getIdToken()
+                serverAPI.postNewMessage(1, roomId, message)
                         .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
-                        .flatMap {
-                            serverAPI.postNewMessage(1, roomId, message)
-                        }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(
                                 onNext = {
@@ -86,7 +81,7 @@ class TalkActivity : RxActivity() {
     override fun onResume() {
         super.onResume()
 
-        Log.d("TalkActivity","onResume")
+        Log.d("TalkActivity", "onResume")
         newMessages.clear()
 
         val pastMessages = loadPastMessages()
@@ -97,7 +92,7 @@ class TalkActivity : RxActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen {
                     it.flatMap {
-                        Log.d("TalkActivity","retry")
+                        Log.d("TalkActivity", "retry")
                         Toast.makeText(applicationContext, "Can't fetch new message...", Toast.LENGTH_SHORT).show()
                         Observable.timer(3, TimeUnit.SECONDS)
                                 .bindUntilEvent(this@TalkActivity, ActivityEvent.PAUSE)
@@ -109,7 +104,7 @@ class TalkActivity : RxActivity() {
                             newMessages.addAll(fetchedMessages)
                             talkAdapter.insertNewMessages(fetchedMessages)
 
-                            Log.d("TalkActivity","onNext")
+                            Log.d("TalkActivity", "onNext")
                             talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
                         }
                 )
@@ -118,7 +113,7 @@ class TalkActivity : RxActivity() {
     override fun onPause() {
         super.onPause()
 
-        Log.d("TalkActivity","onPause")
+        Log.d("TalkActivity", "onPause")
         saveNewMessages()?.subscribe()
     }
 
