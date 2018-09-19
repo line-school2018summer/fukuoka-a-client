@@ -2,8 +2,8 @@ package com.sample.android_client
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +17,20 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         prefs = getSharedPreferences(getString(R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
+        val email = prefs.getString("email", "hoge")
+        val password = prefs.getString("password", "fuga")
+
+        if (email != "hoge" && password != "fuga") {
+            FirebaseAuth.getInstance()
+                    .signInWithEmailAndPassword(email, password)
+                    .addOnSuccessListener {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        RuntimeException("Can't log in.")
+                    }
+        }
 
         login_button_login.setOnClickListener {
             performLogin()
