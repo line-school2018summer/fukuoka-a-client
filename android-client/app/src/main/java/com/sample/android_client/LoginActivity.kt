@@ -14,8 +14,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
+        
         prefs = getSharedPreferences(getString(R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
         val email = prefs.getString("email", "hoge")
         val password = prefs.getString("password", "fuga")
@@ -30,15 +29,17 @@ class LoginActivity : AppCompatActivity() {
                     .addOnFailureListener {
                         RuntimeException("Can't log in.")
                     }
-        }
+        } else {
+            setContentView(R.layout.activity_login)
 
-        login_button_login.setOnClickListener {
-            performLogin()
-        }
+            login_button_login.setOnClickListener {
+                performLogin()
+            }
 
-        go_to_registration_textview.setOnClickListener {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            startActivity(intent)
+            go_to_registration_textview.setOnClickListener {
+                val intent = Intent(this, RegistrationActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
