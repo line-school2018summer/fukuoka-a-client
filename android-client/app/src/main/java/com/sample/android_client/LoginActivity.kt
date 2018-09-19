@@ -1,6 +1,7 @@
 package com.sample.android_client
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +10,13 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
+    lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        prefs = getSharedPreferences(getString(R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
 
         login_button_login.setOnClickListener {
             performLogin()
@@ -43,6 +47,17 @@ class LoginActivity : AppCompatActivity() {
                     // ログインに成功した場合
                     Log.d("LoginActivity", "Successfully login with email/password: $email/****")
                     Toast.makeText(this, "ログインしました！", Toast.LENGTH_SHORT).show()
+
+                    val editer = prefs.edit()
+                    editer.putString("email", email)
+                    editer.putString("password", password)
+                    editer.commit()
+
+                    val email_local = prefs.getString("email", "null")
+                    val password_local = prefs.getString("password", "null")
+
+                    Log.d("LoginActivity", "Email:$email_local")
+                    Log.d("LoginActivity", "Password:$password_local")
 
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
