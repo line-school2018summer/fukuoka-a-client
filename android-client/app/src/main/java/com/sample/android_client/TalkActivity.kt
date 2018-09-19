@@ -22,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.net.SocketTimeoutException
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class TalkActivity : RxActivity() {
@@ -31,6 +30,7 @@ class TalkActivity : RxActivity() {
 
     // TODO Activity起動時に代入するように変更する
     private var roomId = -1
+    private var roomServerId = -1
     private val newMessages = mutableListOf<Message>()
     private val talkAdapter = MessageRecyclerViewAdapter()
 
@@ -41,29 +41,26 @@ class TalkActivity : RxActivity() {
             .build()
             .create(ServerAPI::class.java)
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
 
         roomId = intent.getIntExtra(EXTRA_ROOM_ID, -1)
-        if (roomId == -1) {
+        roomServerId = intent.getIntExtra(EXTRA_ROOM_SERVER_ID, -1)
+
+        if (roomId == -1 || roomServerId == -1) {
             RuntimeException("ルームIdが取得できませんでした")
         }
 
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         send_button_talk.setOnClickListener {
             val message = input_message_box_talk.text.toString()
-            // TODO: message送信処理
 
             if (message.isNotEmpty()) {
-                FirebaseUtil().getIdToken()
+                serverAPI.postNewMessage(1, roomServerId, message)
                         .subscribeOn(Schedulers.io())
-                        .observeOn(Schedulers.io())
-                        .flatMap {
-                            serverAPI.postNewMessage(1, roomId, message)
-                        }
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(
                                 onNext = {
@@ -86,30 +83,32 @@ class TalkActivity : RxActivity() {
     override fun onResume() {
         super.onResume()
 
-        Log.d("TalkActivity","onResume")
+        Log.d("TalkActivity", "onResume")
         newMessages.clear()
 
         val pastMessages = loadPastMessages()
         talkAdapter.setMessages(pastMessages)
         talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
 
-        fetchNewMessages()
+        FirebaseUtil().getIdToken()
+                .flatMap { token ->
+                    fetchNewMessages(token)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen {
                     it.flatMap {
-                        Log.d("TalkActivity","retry")
+                        Log.d("TalkActivity", "retry")
                         Toast.makeText(applicationContext, "Can't fetch new message...", Toast.LENGTH_SHORT).show()
                         Observable.timer(3, TimeUnit.SECONDS)
                                 .bindUntilEvent(this@TalkActivity, ActivityEvent.PAUSE)
                     }
-
                 }
                 .subscribeBy(
                         onNext = { fetchedMessages ->
                             newMessages.addAll(fetchedMessages)
                             talkAdapter.insertNewMessages(fetchedMessages)
 
-                            Log.d("TalkActivity","onNext")
+                            Log.d("TalkActivity", "onNext")
                             talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
                         }
                 )
@@ -118,7 +117,7 @@ class TalkActivity : RxActivity() {
     override fun onPause() {
         super.onPause()
 
-        Log.d("TalkActivity","onPause")
+        Log.d("TalkActivity", "onPause")
         saveNewMessages()?.subscribe()
     }
 
@@ -144,14 +143,14 @@ class TalkActivity : RxActivity() {
 
     }
 
-    private fun fetchNewMessages(): Observable<Sequence<Message>> {
+    private fun fetchNewMessages(token: String): Observable<Sequence<Message>> {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .bindUntilEvent(this, ActivityEvent.PAUSE)
                 .subscribeOn(Schedulers.io())
-                .flatMap { serverAPI.fetchAllMessages() }
+                .flatMap { serverAPI.fetchAllMessages(token) }
                 .map {
                     it.asSequence()
-                            .filter { it.roomId == roomId }
+                            .filter { it.roomId == roomServerId }
                             .drop(talkAdapter.itemCount)
                             .map { it.toMessage() }
                 }
