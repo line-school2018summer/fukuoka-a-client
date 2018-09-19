@@ -53,8 +53,8 @@ class FriendsFragment : Fragment() {
         }
 
         val rooms = loadRooms()
-        friends = rooms.asSequence().filter { !(it.isGroup) }.map { it.toRoomItem() }.toList()
-        groups = rooms.asSequence().filter { it.isGroup }.map { it.toRoomItem() }.toList()
+        friends = rooms.asSequence().filter { !(it.isGroup) }.map { RoomItem(it) }.toList()
+        groups = rooms.asSequence().filter { it.isGroup }.map { RoomItem(it) }.toList()
 
         displayGroupsAndFriends()
 
