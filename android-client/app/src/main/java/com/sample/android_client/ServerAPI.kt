@@ -18,9 +18,9 @@ interface ServerAPI {
 
 class MessageReceiver(val type: String,
                       val id: Int,
-                      val content: String,
                       val senderId: Int,
                       val roomId: Int,
+                      val content: String,
                       @SerializedName("SendTime") val sendTime: Timestamp) {
     fun toMessage(): Message {
         return Message(id, roomId, senderId, content, sendTime)
