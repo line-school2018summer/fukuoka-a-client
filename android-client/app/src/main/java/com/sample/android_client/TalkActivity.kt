@@ -41,8 +41,6 @@ class TalkActivity : RxActivity() {
             .build()
             .create(ServerAPI::class.java)
 
-    private lateinit var token: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_talk)
@@ -52,17 +50,13 @@ class TalkActivity : RxActivity() {
 
         if (roomId == -1 || roomServerId == -1) {
             RuntimeException("ルームIdが取得できませんでした")
-
         }
-
-        FirebaseUtil().getIdToken().subscribe { token = it }
-        Log.d("TalkActivity", token)
 
         talk_recycler_view.adapter = talkAdapter
         talk_recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         send_button_talk.setOnClickListener {
             val message = input_message_box_talk.text.toString()
-            // TODO: message送信処理
 
             if (message.isNotEmpty()) {
                 serverAPI.postNewMessage(1, roomServerId, message)
@@ -96,7 +90,10 @@ class TalkActivity : RxActivity() {
         talkAdapter.setMessages(pastMessages)
         talk_recycler_view.scrollToPosition(talkAdapter.itemCount - 1)
 
-        fetchNewMessages()
+        FirebaseUtil().getIdToken()
+                .flatMap { token ->
+                    fetchNewMessages(token)
+                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .retryWhen {
                     it.flatMap {
@@ -105,7 +102,6 @@ class TalkActivity : RxActivity() {
                         Observable.timer(3, TimeUnit.SECONDS)
                                 .bindUntilEvent(this@TalkActivity, ActivityEvent.PAUSE)
                     }
-
                 }
                 .subscribeBy(
                         onNext = { fetchedMessages ->
@@ -147,7 +143,7 @@ class TalkActivity : RxActivity() {
 
     }
 
-    private fun fetchNewMessages(): Observable<Sequence<Message>> {
+    private fun fetchNewMessages(token: String): Observable<Sequence<Message>> {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .bindUntilEvent(this, ActivityEvent.PAUSE)
                 .subscribeOn(Schedulers.io())
