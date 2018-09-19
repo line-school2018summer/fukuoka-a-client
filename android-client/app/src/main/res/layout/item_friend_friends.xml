@@ -18,6 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/circular_imageview_item_friend"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/user_icon_imageview_friends"
+        app:layout_constraintEnd_toEndOf="@+id/user_icon_imageview_friends"
+        app:layout_constraintStart_toStartOf="@+id/user_icon_imageview_friends"
+        app:layout_constraintTop_toTopOf="@+id/user_icon_imageview_friends" />
+
     <TextView
         android:id="@+id/user_name_textview_friends"
         android:layout_width="wrap_content"
