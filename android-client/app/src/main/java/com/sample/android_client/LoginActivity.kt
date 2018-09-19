@@ -14,12 +14,12 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        prefs = getSharedPreferences(getString(R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
-        val email = prefs.getString("email", "hoge")
-        val password = prefs.getString("password", "fuga")
 
-        if (email != "hoge" && password != "fuga") {
+        prefs = getSharedPreferences(getString(R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
+        val email = prefs.getString("email", "null")
+        val password = prefs.getString("password", "null")
+
+        if (email != "null" && password != "null") {
             FirebaseAuth.getInstance()
                     .signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
