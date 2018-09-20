@@ -1,5 +1,6 @@
 package com.sample.android_client
 
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 import kotlinx.android.synthetic.main.item_friend_friends.*
@@ -20,7 +21,15 @@ class RoomItem(val roomId: Int,
             roomName.substring(0..10) + ".."
         }
 
-        // TODO : 相手のアイコンまたはグループアイコンを表示する
+        // TODO: 友達またはグループのアイコンのURLを取得する
+
+        val defaultIconURL = "https://firebasestorage.googleapis.com/v0/b/fukuoka-a-client.appspot.com/o/image%2Fdman.png?alt=media&token=ca1deb08-e413-4b37-b925-e07b39232e35"
+        
+        Picasso.get()
+                .load(defaultIconURL)
+                .fit()
+                .centerCrop()
+                .into(viewHolder.circular_imageview_item_friend)
     }
 
     override fun getLayout(): Int = R.layout.item_friend_friends
