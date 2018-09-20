@@ -17,9 +17,12 @@ data class RoomItem(val roomId: Int,
             roomName.substring(0..10) + ".."
         }
 
-        // TODO : 相手のアイコンまたはグループアイコンを表示する
+        // TODO: 友達またはグループのアイコンのURLを取得する
+
+        val defaultIconURL = "https://firebasestorage.googleapis.com/v0/b/fukuoka-a-client.appspot.com/o/image%2Fdman.png?alt=media&token=ca1deb08-e413-4b37-b925-e07b39232e35"
+        
         Picasso.get()
-                .load("https://firebasestorage.googleapis.com/v0/b/fukuoka-a-client.appspot.com/o/image%2F44f40371-93f2-4fcc-a698-329c565896ab?alt=media&token=d2971410-fad5-4c31-9f00-ef9f87ee9b61")
+                .load(defaultIconURL)
                 .fit()
                 .centerCrop()
                 .into(viewHolder.circular_imageview_item_friend)
