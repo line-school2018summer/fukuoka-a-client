@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.Item
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder
@@ -182,7 +183,16 @@ class CreateGroupActivity : AppCompatActivity() {
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
-            // TODO : 友達のアイコンを表示する
+
+            // TODO: 友達またはグループのアイコンのURLを取得する
+
+            val defaultIconURL = "https://firebasestorage.googleapis.com/v0/b/fukuoka-a-client.appspot.com/o/image%2Fdman.png?alt=media&token=ca1deb08-e413-4b37-b925-e07b39232e35"
+
+            Picasso.get()
+                    .load(defaultIconURL)
+                    .fit()
+                    .centerCrop()
+                    .into(viewHolder.circular_imageview_item_friend)
         }
 
         override fun getLayout(): Int = R.layout.item_friend_friends
@@ -202,7 +212,16 @@ class CreateGroupActivity : AppCompatActivity() {
             val limitLength = 10
             val displayName = if (userName.length <= limitLength) userName else userName.substring(0 until limitLength - 1) + "..."
             viewHolder.user_name_textview_scroll.text = displayName
-            // TODO : 友達のアイコンを表示する
+
+            // TODO: 友達またはグループのアイコンのURLを取得する
+
+            val defaultIconURL = "https://firebasestorage.googleapis.com/v0/b/fukuoka-a-client.appspot.com/o/image%2Fdman.png?alt=media&token=ca1deb08-e413-4b37-b925-e07b39232e35"
+
+            Picasso.get()
+                    .load(defaultIconURL)
+                    .fit()
+                    .centerCrop()
+                    .into(viewHolder.user_icon_circular_imageview_scroll)
         }
 
         override fun getLayout(): Int = R.layout.item_user_scroll
