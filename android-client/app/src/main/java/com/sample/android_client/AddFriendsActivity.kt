@@ -8,22 +8,29 @@ import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 class AddFriendsActivity : AppCompatActivity() {
     private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
     private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
-    private var allUsers = listOf<SelectableUserItem>()       // DBに登録されているユーザ全員
+
+    private val serverAPI = Retrofit.Builder()
+            .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ServerAPI::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
-
-        // Activity生成時に一回だけやればよい
-        fetchAllUsers()
 
         recycler_view_add_friends.apply {
             layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
@@ -37,6 +44,11 @@ class AddFriendsActivity : AppCompatActivity() {
 
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
+
+            if (keyword.isBlank()) {
+                return@setOnClickListener
+            }
+
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
 
             if (isAlreadyFriend(keyword)) {
@@ -95,14 +107,12 @@ class AddFriendsActivity : AppCompatActivity() {
     // 友達を検索するときは、ユーザが決める一意なIDで検索させる
     // 悪用されないように完全一致にする
     // 一致するユーザが見つからないときはnullを返す
-    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? =
-            allUsers.singleOrNull { it.userId == keyword }
+    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
+        var receiver = serverAPI.fetchUser(keyword)
+                .subscribeOn(Schedulers.io())
+                .blockingGet()
 
-
-    private fun fetchAllUsers() {
-        // とりあえずダミーでユーザ全体のリストを作っている
-        // TODO: データベースに登録されているユーザ全体を取ってくる処理を書く
-        allUsers = generateDummyUsersItems()
+        return SelectableUserItem(receiver.toUser())
     }
 
     private fun displaySearchedUser(keyword: String) {
@@ -118,23 +128,12 @@ class AddFriendsActivity : AppCompatActivity() {
         updateGuideTextView()
     }
 
-    private fun generateDummyUsersItems(): List<SelectableUserItem> {
-        val dummyUserItems = listOf<SelectableUserItem>(
-                SelectableUserItem("a", "saito yuya", 0),
-                SelectableUserItem("b", "suzuki yuto", 0),
-                SelectableUserItem("c", "suzuki takuma", 0),
-                SelectableUserItem("d", "honda keisuke", 0),
-                SelectableUserItem("e", "kawasaki tomoya", 0),
-                SelectableUserItem("f", "yamaha tarou", 0)
-        )
-
-        return dummyUserItems
-    }
-
     inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
                                    val userName: String,    // Userが表示したい名前
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
+        constructor(user: User) : this(user.namedId, user.name, user.iconId, user.isFriend)
+
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f
