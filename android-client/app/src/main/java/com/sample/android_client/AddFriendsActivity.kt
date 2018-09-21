@@ -12,11 +12,11 @@ import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
 
 class AddFriendsActivity : AppCompatActivity() {
-    val groupAdapter = GroupAdapter<ViewHolder>().apply {
+    private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
-    val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
-    var allUsers = listOf<SelectableUserItem>()       // DBに登録されているユーザ全員
+    private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
+    private var allUsers = listOf<SelectableUserItem>()       // DBに登録されているユーザ全員
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +63,7 @@ class AddFriendsActivity : AppCompatActivity() {
             search_box_add_friends.text.clear()
         }
 
-        groupAdapter.setOnItemClickListener { item, view ->
+        groupAdapter.setOnItemClickListener { item, _ ->
             val sItem = item as SelectableUserItem
             if (sItem.isSelected) {
                 selectedUsers.remove(sItem)
@@ -73,7 +73,7 @@ class AddFriendsActivity : AppCompatActivity() {
                 sItem.isSelected = true
             }
             sItem.notifyChanged()
-            updateGuideTextview()
+            updateGuideTextView()
         }
 
     }
@@ -83,7 +83,7 @@ class AddFriendsActivity : AppCompatActivity() {
         return false
     }
 
-    private fun updateGuideTextview() {
+    private fun updateGuideTextView() {
         val numberSelected = selectedUsers.size
         if (numberSelected > 0) {
             guide_textview_add_friends.text = "友達になりたい人を選んでください(${numberSelected}人選択中)"
@@ -115,7 +115,7 @@ class AddFriendsActivity : AppCompatActivity() {
 
         groupAdapter.clear()
         groupAdapter.add(item)
-        updateGuideTextview()
+        updateGuideTextView()
     }
 
     private fun generateDummyUsersItems(): List<SelectableUserItem> {
