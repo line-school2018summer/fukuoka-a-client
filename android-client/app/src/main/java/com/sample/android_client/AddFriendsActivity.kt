@@ -127,7 +127,7 @@ class AddFriendsActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
 
-        return if (receiver == null) {
+        return if (receiver.isEmpty()) {
             null
         } else
             SelectableUserItem(receiver.first().toUser())
