@@ -135,8 +135,7 @@ class AddFriendsActivity : AppCompatActivity() {
         updateGuideTextView()
     }
 
-    inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
-                                   val userName: String,    // Userが表示したい名前
+    inner class SelectableUserItem(val userName: String,    // Userが表示したい名前
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
         constructor(user: User) : this(user.namedId, user.name, user.iconId, user.isFriend)

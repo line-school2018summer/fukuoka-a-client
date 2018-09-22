@@ -28,7 +28,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
         db.createTable(USERS_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
-                "user_id" to INTEGER + UNIQUE + NOT_NULL,
+                "named_id" to TEXT + UNIQUE + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
                 "icon_id" to INTEGER,
                 "is_friend" to INTEGER + NOT_NULL)
