@@ -26,6 +26,8 @@ class LoginActivity : AppCompatActivity() {
                         val intent = Intent(this, HomeActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
+
+                        finish()
                     }
                     .addOnFailureListener {
                         RuntimeException("Can't log in.")
@@ -80,6 +82,8 @@ class LoginActivity : AppCompatActivity() {
                     val intent = Intent(this, HomeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
+
+                    finish()
                 }
                 .addOnFailureListener {
                     Log.d("LoginActivity", "Failed to login user: ${it.message}")
