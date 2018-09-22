@@ -24,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
                     .signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
                         val intent = Intent(this, HomeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
                     }
                     .addOnFailureListener {
@@ -75,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "Password:$password_local")
 
                     val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                 }
                 .addOnFailureListener {
