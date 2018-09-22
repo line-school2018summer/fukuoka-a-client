@@ -58,6 +58,8 @@ class AddFriendsActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            selectedUsers.clear()
+
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
 
             if (isAlreadyFriend(keyword)) {
