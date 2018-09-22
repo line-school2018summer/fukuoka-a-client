@@ -11,6 +11,9 @@ import com.xwray.groupie.kotlinandroidextensions.Item
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.rowParser
+import org.jetbrains.anko.db.select
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,6 +23,8 @@ class AddFriendsActivity : AppCompatActivity() {
         spanCount = 4
     }
     private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
+    private val localUsers by lazy { loadLocalUsers() }
+    private val database by lazy { DBHelper.getInstance(this).writableDatabase }
 
     private val serverAPI by lazy {
         Retrofit.Builder()
@@ -89,12 +94,15 @@ class AddFriendsActivity : AppCompatActivity() {
             sItem.notifyChanged()
             updateGuideTextView()
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        database.close()
     }
 
     private fun isAlreadyFriend(keyword: String): Boolean {
-        // TODO: keywordをuserIdに持つユーザが存在し、かつその人と既に友達であればtrueを返す処理
-        return false
+        return localUsers.any { it.namedId == keyword && it.isFriend }
     }
 
     private fun updateGuideTextView() {
@@ -135,10 +143,26 @@ class AddFriendsActivity : AppCompatActivity() {
         updateGuideTextView()
     }
 
+    private fun loadLocalUsers(): List<User> {
+        return database.select(USERS_TABLE_NAME,
+                "server_id",
+                "named_id",
+                "name",
+                "icon_id",
+                "is_friend")
+                .exec {
+                    val parser = rowParser { serverId: Int, namedId: String, name: String, iconId: Int, isFriend: Int ->
+                        User(serverId, name, namedId, iconId, isFriend == 1)
+                    }
+                    parseList(parser)
+                }
+    }
+
+
     inner class SelectableUserItem(val userName: String,    // Userが表示したい名前
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
-        constructor(user: User) : this(user.namedId, user.name, user.iconId, user.isFriend)
+        constructor(user: User) : this(user.name, user.iconId)
 
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
