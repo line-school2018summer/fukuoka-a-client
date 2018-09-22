@@ -34,7 +34,7 @@ class MessageReceiver(val type: String,
 class UserReceiver(val id: Int,
                    val name: String,
                    val uId: Int,
-                   val namedId: String) {
+                   @SerializedName("named_id") val namedId: String) {
     fun toUser(): User {
         return User(id, name, namedId, 0, false)
     }
