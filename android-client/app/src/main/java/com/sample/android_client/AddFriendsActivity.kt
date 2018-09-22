@@ -21,12 +21,14 @@ class AddFriendsActivity : AppCompatActivity() {
     }
     private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
 
-    private val serverAPI = Retrofit.Builder()
-            .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ServerAPI::class.java)
+    private val serverAPI by lazy {
+        Retrofit.Builder()
+                .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ServerAPI::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,11 +110,16 @@ class AddFriendsActivity : AppCompatActivity() {
     // 悪用されないように完全一致にする
     // 一致するユーザが見つからないときはnullを返す
     private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
+
+        // TODO ユーザーが見つからなかった処理の実装
         var receiver = serverAPI.fetchUser(keyword)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
 
-        return SelectableUserItem(receiver.toUser())
+        return if (receiver == null) {
+            null
+        } else
+            SelectableUserItem(receiver.toUser())
     }
 
     private fun displaySearchedUser(keyword: String) {
