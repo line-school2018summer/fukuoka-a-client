@@ -34,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
             setContentView(R.layout.activity_login)
 
             login_button_login.setOnClickListener {
+                login_button_login.isClickable = false
                 performLogin()
             }
 
@@ -52,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
         // emptyであるかどうかをチェックしている
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "EmailまたはPasswordを入力してください", Toast.LENGTH_SHORT).show()
+            login_button_login.isClickable = true
             return
         }
 
@@ -82,6 +84,7 @@ class LoginActivity : AppCompatActivity() {
                 .addOnFailureListener {
                     Log.d("LoginActivity", "Failed to login user: ${it.message}")
                     Toast.makeText(this, "ログインに失敗しました: ${it.message}", Toast.LENGTH_SHORT).show()
+                    login_button_login.isClickable = true
                 }
     }
 }
