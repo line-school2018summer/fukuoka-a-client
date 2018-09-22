@@ -8,9 +8,11 @@ import android.widget.Toast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
+import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.parseList
 import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
@@ -75,6 +77,8 @@ class AddFriendsActivity : AppCompatActivity() {
             // TODO: 選んだユーザを友達に追加する処理
             val numberSelected = selectedUsers.size
             Toast.makeText(this, "${numberSelected}人を友達に追加しました！", Toast.LENGTH_LONG).show()
+            addFriend()
+
             finish()
         }
 
@@ -119,7 +123,6 @@ class AddFriendsActivity : AppCompatActivity() {
     // 一致するユーザが見つからないときはnullを返す
     private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
 
-        // TODO ユーザーが見つからなかった処理の実装
         var receiver = serverAPI.fetchUser(keyword)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
@@ -127,7 +130,7 @@ class AddFriendsActivity : AppCompatActivity() {
         return if (receiver == null) {
             null
         } else
-            SelectableUserItem(receiver.toUser())
+            SelectableUserItem(receiver.first().toUser())
     }
 
     private fun displaySearchedUser(keyword: String) {
@@ -158,11 +161,27 @@ class AddFriendsActivity : AppCompatActivity() {
                 }
     }
 
+    private fun addFriend() {
+        Observable.fromIterable(selectedUsers)
+                .subscribeOn(Schedulers.io())
+                .flatMap { serverAPI.fetchUser(it.userNamedId).toObservable() }
+                .subscribe {
+                    val user = it.first().toUser()
+                    println(user)
+                    database.insert(USERS_TABLE_NAME,
+                            "server_id" to user.serverId,
+                            "named_id" to user.namedId,
+                            "name" to user.name,
+                            "icon_id" to user.iconId,
+                            "is_friend" to 1)
+                }
+    }
 
-    inner class SelectableUserItem(val userName: String,    // Userが表示したい名前
+    inner class SelectableUserItem(val userNamedId: String,
+                                   val userName: String,    // Userが表示したい名前
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
-        constructor(user: User) : this(user.name, user.iconId)
+        constructor(user: User) : this(user.namedId, user.name, user.iconId)
 
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName

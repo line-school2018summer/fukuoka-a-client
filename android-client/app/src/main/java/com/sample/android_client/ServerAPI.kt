@@ -17,7 +17,7 @@ interface ServerAPI {
     fun postNewMessage(@Path("userId") userId: Int, @Path("roomId") roomId: Int, @Path("content") content: String): Observable<Boolean>
 
     @GET("/user/NamedId")
-    fun fetchUser(@Query("NamedId") namedId: String): Single<UserReceiver>
+    fun fetchUser(@Query("NamedId") namedId: String): Single<List<UserReceiver>>
 }
 
 class MessageReceiver(val type: String,
@@ -33,7 +33,7 @@ class MessageReceiver(val type: String,
 
 class UserReceiver(val id: Int,
                    val name: String,
-                   val uId: Int,
+                   @SerializedName("uid") val uId: String,
                    @SerializedName("named_id") val namedId: String) {
     fun toUser(): User {
         return User(id, name, namedId, 0, false)
