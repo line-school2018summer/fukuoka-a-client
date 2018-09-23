@@ -24,7 +24,10 @@ class LoginActivity : AppCompatActivity() {
                     .signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
                         val intent = Intent(this, HomeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
+
+                        finish()
                     }
                     .addOnFailureListener {
                         RuntimeException("Can't log in.")
@@ -33,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
             setContentView(R.layout.activity_login)
 
             login_button_login.setOnClickListener {
+                login_button_login.isClickable = false
                 performLogin()
             }
 
@@ -51,6 +55,7 @@ class LoginActivity : AppCompatActivity() {
         // emptyであるかどうかをチェックしている
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "EmailまたはPasswordを入力してください", Toast.LENGTH_SHORT).show()
+            login_button_login.isClickable = true
             return
         }
 
@@ -75,11 +80,15 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "Password:$password_local")
 
                     val intent = Intent(this, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
+
+                    finish()
                 }
                 .addOnFailureListener {
                     Log.d("LoginActivity", "Failed to login user: ${it.message}")
                     Toast.makeText(this, "ログインに失敗しました: ${it.message}", Toast.LENGTH_SHORT).show()
+                    login_button_login.isClickable = true
                 }
     }
 }
