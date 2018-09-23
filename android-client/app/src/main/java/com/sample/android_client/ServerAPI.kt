@@ -11,9 +11,6 @@ import retrofit2.http.Query
 import java.sql.Timestamp
 
 interface ServerAPI {
-    @GET("message")
-    fun fetchAllMessages(): Observable<List<MessageReceiver>>
-
     @GET("messagestring")
     fun fetchAllMessages(@Header("Token") token: String): Observable<List<MessageReceiver>>
   
