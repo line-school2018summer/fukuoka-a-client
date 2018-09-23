@@ -2,6 +2,7 @@ package com.sample.android_client
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -17,12 +18,15 @@ import java.util.*
 const val LIMIT_USER_NAME_LENGTH = 20        // ユーザが登録できる名前の長さの限界
 
 class RegistrationActivity : AppCompatActivity() {
+    lateinit var prefs: SharedPreferences
     var selectedPhotoUri: Uri? = null   // アイコンにするために選択した画像のURI
     var userUID: String? = null         // Firebaseで発行されるUID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
+
+        prefs = getSharedPreferences(getString(com.sample.android_client.R.string.preference_key), AppCompatActivity.MODE_PRIVATE)
 
         register_button_register.setOnClickListener {
             performRegister()
@@ -78,6 +82,11 @@ class RegistrationActivity : AppCompatActivity() {
                         Log.d("RegistrationActivity", "アイコンが選択されていないのでデフォルトアイコンを設定する")
                         // TODO: デフォルトアイコンを設定する
                     }
+
+                    val editor = prefs.edit()
+                    editor.putString("email", email)
+                    editor.putString("password", password)
+                    editor.commit()
 
                     // 登録したユーザアイコンをFirebaseのストレージに保存する
                     // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
