@@ -9,22 +9,38 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
+import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.rowParser
+import org.jetbrains.anko.db.select
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 
 class AddFriendsActivity : AppCompatActivity() {
-    val groupAdapter = GroupAdapter<ViewHolder>().apply {
+    private val groupAdapter = GroupAdapter<ViewHolder>().apply {
         spanCount = 4
     }
-    val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
-    var allUsers = listOf<SelectableUserItem>()       // DBに登録されているユーザ全員
+    private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
+    private val localUsers by lazy { loadLocalUsers() }
+    private val database by lazy { DBHelper.getInstance(this).writableDatabase }
+
+    private val serverAPI by lazy {
+        Retrofit.Builder()
+                .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ServerAPI::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_friends)
-
-        // Activity生成時に一回だけやればよい
-        fetchAllUsers()
 
         recycler_view_add_friends.apply {
             layoutManager = GridLayoutManager(this@AddFriendsActivity, groupAdapter.spanCount).apply {
@@ -38,6 +54,13 @@ class AddFriendsActivity : AppCompatActivity() {
 
         search_button_add_friends.setOnClickListener {
             val keyword = search_box_add_friends.text.toString()
+
+            if (keyword.isBlank()) {
+                return@setOnClickListener
+            }
+
+            selectedUsers.clear()
+
             Log.d("AddFriendsActivity", "文字列${keyword}が含まれるユーザを検索")
 
             if (isAlreadyFriend(keyword)) {
@@ -57,6 +80,8 @@ class AddFriendsActivity : AppCompatActivity() {
             // TODO: 選んだユーザを友達に追加する処理
             val numberSelected = selectedUsers.size
             Toast.makeText(this, "${numberSelected}人を友達に追加しました！", Toast.LENGTH_LONG).show()
+            addFriend()
+
             finish()
         }
 
@@ -64,7 +89,7 @@ class AddFriendsActivity : AppCompatActivity() {
             search_box_add_friends.text.clear()
         }
 
-        groupAdapter.setOnItemClickListener { item, view ->
+        groupAdapter.setOnItemClickListener { item, _ ->
             val sItem = item as SelectableUserItem
             if (sItem.isSelected) {
                 selectedUsers.remove(sItem)
@@ -74,17 +99,20 @@ class AddFriendsActivity : AppCompatActivity() {
                 sItem.isSelected = true
             }
             sItem.notifyChanged()
-            updateGuideTextview()
+            updateGuideTextView()
         }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        database.close()
     }
 
     private fun isAlreadyFriend(keyword: String): Boolean {
-        // TODO: keywordをuserIdに持つユーザが存在し、かつその人と既に友達であればtrueを返す処理
-        return false
+        return localUsers.any { it.namedId == keyword && it.isFriend }
     }
 
-    private fun updateGuideTextview() {
+    private fun updateGuideTextView() {
         val numberSelected = selectedUsers.size
         if (numberSelected > 0) {
             guide_textview_add_friends.text = "友達になりたい人を選んでください(${numberSelected}人選択中)"
@@ -96,14 +124,16 @@ class AddFriendsActivity : AppCompatActivity() {
     // 友達を検索するときは、ユーザが決める一意なIDで検索させる
     // 悪用されないように完全一致にする
     // 一致するユーザが見つからないときはnullを返す
-    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? =
-            allUsers.singleOrNull { it.userId == keyword }
+    private fun fetchSearchedUsers(keyword: String): SelectableUserItem? {
 
+        var receiver = serverAPI.fetchUser(keyword)
+                .subscribeOn(Schedulers.io())
+                .blockingGet()
 
-    private fun fetchAllUsers() {
-        // とりあえずダミーでユーザ全体のリストを作っている
-        // TODO: データベースに登録されているユーザ全体を取ってくる処理を書く
-        allUsers = generateDummyUsersItems()
+        return if (receiver.isEmpty()) {
+            null
+        } else
+            SelectableUserItem(receiver.first().toUser())
     }
 
     private fun displaySearchedUser(keyword: String) {
@@ -116,26 +146,46 @@ class AddFriendsActivity : AppCompatActivity() {
 
         groupAdapter.clear()
         groupAdapter.add(item)
-        updateGuideTextview()
+        updateGuideTextView()
     }
 
-    private fun generateDummyUsersItems(): List<SelectableUserItem> {
-        val dummyUserItems = listOf<SelectableUserItem>(
-                SelectableUserItem("a", "saito yuya", 0),
-                SelectableUserItem("b", "suzuki yuto", 0),
-                SelectableUserItem("c", "suzuki takuma", 0),
-                SelectableUserItem("d", "honda keisuke", 0),
-                SelectableUserItem("e", "kawasaki tomoya", 0),
-                SelectableUserItem("f", "yamaha tarou", 0)
-        )
-
-        return dummyUserItems
+    private fun loadLocalUsers(): List<User> {
+        return database.select(USERS_TABLE_NAME,
+                "server_id",
+                "named_id",
+                "name",
+                "icon_id",
+                "is_friend")
+                .exec {
+                    val parser = rowParser { serverId: Int, namedId: String, name: String, iconId: Int, isFriend: Int ->
+                        User(serverId, name, namedId, iconId, isFriend == 1)
+                    }
+                    parseList(parser)
+                }
     }
 
-    inner class SelectableUserItem(val userId: String,      // Userに登録させる一意なID
+    private fun addFriend() {
+        Observable.fromIterable(selectedUsers)
+                .subscribeOn(Schedulers.io())
+                .flatMap { serverAPI.fetchUser(it.userNamedId).toObservable() }
+                .subscribe {
+                    val user = it.first().toUser()
+                    println(user)
+                    database.insert(USERS_TABLE_NAME,
+                            "server_id" to user.serverId,
+                            "named_id" to user.namedId,
+                            "name" to user.name,
+                            "icon_id" to user.iconId,
+                            "is_friend" to 1)
+                }
+    }
+
+    inner class SelectableUserItem(val userNamedId: String,
                                    val userName: String,    // Userが表示したい名前
                                    val userIconId: Int,
                                    var isSelected: Boolean = false) : Item() {
+        constructor(user: User) : this(user.namedId, user.name, user.iconId)
+
         override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
             viewHolder.user_name_textview_friends.text = userName
             viewHolder.itemView.alpha = if (isSelected) 1f else 0.6f

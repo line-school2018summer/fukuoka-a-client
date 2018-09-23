@@ -28,7 +28,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
         db.createTable(USERS_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
                 "server_id" to INTEGER + UNIQUE + NOT_NULL,
-                "user_id" to INTEGER + UNIQUE + NOT_NULL,
+                "named_id" to TEXT + UNIQUE + NOT_NULL,
                 "name" to TEXT + NOT_NULL,
                 "icon_id" to INTEGER,
                 "is_friend" to INTEGER + NOT_NULL)
@@ -52,6 +52,14 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
 
         // デバッグ用データを追加
         // TODO 今後削除する
+        db.insert(USERS_TABLE_NAME,
+                "server_id" to 1,
+                "named_id" to "aiueo",
+                "name" to "aa",
+                "icon_id" to 1,
+                "is_friend" to 1
+        )
+
         db.insert(ROOMS_TABLE_NAME,
                 "server_id" to 0,
                 "icon_id" to 1,
