@@ -2,10 +2,8 @@ package com.sample.android_client
 
 import com.google.gson.annotations.SerializedName
 import io.reactivex.Observable
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import io.reactivex.Single
+import retrofit2.http.*
 import java.sql.Timestamp
 
 interface ServerAPI {
@@ -13,7 +11,17 @@ interface ServerAPI {
     fun fetchAllMessages(@Header("Token") token: String): Observable<List<MessageReceiver>>
 
     @POST("message/{userId}/{roomId}/{content}")
-    fun postNewMessage(@Path("userId") userId: Int, @Path("roomId") roomId: Int, @Path("content") content: String): Observable<Boolean>
+    fun postNewMessage(@Path("userId") userId: Int,
+                       @Path("roomId") roomId: Int,
+                       @Path("content") content: String): Observable<Boolean>
+
+    @POST("/user/{name}/{namedId}")
+    fun postUser(@Header("Token") token: String,
+                 @Path("name") name: String,
+                 @Path("namedId") namedId: String): Observable<UserReceiver>
+
+    @GET("/user/NamedId")
+    fun fetchUser(@Query("NamedId") namedId: String): Single<List<UserReceiver>>
 }
 
 class MessageReceiver(val type: String,
@@ -25,4 +33,11 @@ class MessageReceiver(val type: String,
     fun toMessage(): Message {
         return Message(id, roomId, senderId, content, sendTime)
     }
+}
+
+
+class UserReceiver(val id: Int,
+                   val name: String,
+                   @SerializedName("uid") val uId: String,
+                   @SerializedName("named_id") val namedId: String) {
 }
