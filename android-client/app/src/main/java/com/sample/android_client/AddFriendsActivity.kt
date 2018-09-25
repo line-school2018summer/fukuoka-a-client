@@ -30,7 +30,11 @@ class AddFriendsActivity : AppCompatActivity() {
     private val localUsers by lazy { loadLocalUsers() }
     private val database by lazy { DBHelper.getInstance(this).writableDatabase }
 
-    private val myId = 1
+    private val myId by lazy {
+        FirebaseUtil().getIdToken()
+                .flatMap { serverAPI.fetchMyId(it) }
+                .blockingFirst()
+    }
 
     private val serverAPI by lazy {
         Retrofit.Builder()
