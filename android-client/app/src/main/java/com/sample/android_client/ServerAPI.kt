@@ -21,18 +21,18 @@ interface ServerAPI {
                  @Path("isGroup") isGroup: Boolean,
                  @Path("IconURL") iconURL: String = " "): Observable<RoomReceiver>
 
-    @POST("roomInfo/{userId}/{roomId}")
+    @POST("roominfo/{userId}/{roomId}")
     fun postRoomInfo(@Path("userId") userId: Int,
                      @Path("roomId") roomId: Int): Observable<Boolean>
 
     @GET("user/MyId")
-    fun fetchMyId(@Header("Token") token: String): Single<Int>
+    fun fetchMyId(@Header("Token") token: String): Observable<Int>
 
     @GET("roominfo/{userId}/roomid")
-    fun fetchRoomIdInclude(@Path("userId") userId: Int): Observable<List<Int>>
+    fun fetchRoomIdsInclude(@Path("userId") userId: Int): Observable<List<Int>>
 
     @GET("roominfo/{roomId}/userid")
-    fun fetchUserIdBelong(@Path("roomId") roomId: Int): Observable<List<UserReceiver>>
+    fun fetchUserIdsBelong(@Path("roomId") roomId: Int): Observable<List<UserReceiver>>
 }
 
 class MessageReceiver(val type: String,

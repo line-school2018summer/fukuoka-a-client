@@ -205,14 +205,15 @@ class AddFriendsActivity : AppCompatActivity() {
                     .subscribe()
         }
 
-        serverAPI.fetchRoomIdInclude(user.serverId)
+        serverAPI.fetchRoomIdsInclude(user.serverId)
                 .subscribeOn(Schedulers.io())
                 .flatMap { Observable.fromIterable(it) }
-                .flatMap { serverAPI.fetchUserIdBelong(it) }
+                .flatMap { serverAPI.fetchUserIdsBelong(it) }
                 .flatMap { Observable.fromIterable(it) }
                 .filter { it.id == myId }
                 .subscribeBy(
                         onNext = {
+                            Log.d("AddFriendActivity", "一致するユーザーの組は存在する")
                             existRoom = true
                         },
                         onComplete = {
