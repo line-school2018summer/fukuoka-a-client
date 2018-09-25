@@ -12,7 +12,12 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_registration.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 const val LIMIT_USER_NAME_LENGTH = 20        // ユーザが登録できる名前の長さの限界
@@ -21,6 +26,15 @@ class RegistrationActivity : AppCompatActivity() {
     lateinit var prefs: SharedPreferences
     var selectedPhotoUri: Uri? = null   // アイコンにするために選択した画像のURI
     var userUID: String? = null         // Firebaseで発行されるUID
+
+    private val serverAPI by lazy {
+        Retrofit.Builder()
+                .baseUrl("http://ec2-13-114-207-18.ap-northeast-1.compute.amazonaws.com")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ServerAPI::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +102,18 @@ class RegistrationActivity : AppCompatActivity() {
                     editor.putString("password", password)
                     editor.commit()
 
+                    FirebaseUtil().getIdToken()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
+                            .flatMap { token ->
+                                serverAPI.postUser(token, name, userId)
+                            }
+                            .subscribeBy(
+                                    onError = {
+                                        throw it
+                                    }
+                            )
+
                     // 登録したユーザアイコンをFirebaseのストレージに保存する
                     // 実際はFirebaseではなく、しかるべき場所(EC2?)に保存するなどする
                     uploadImageToFirebaseStorage()
@@ -138,8 +164,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun isAlreadyRegistered(userId: String): Boolean {
-        // TODO: サーバのDBにアクセスして、userIdが既に登録していないか確かめる
-        return false
+        return serverAPI.fetchUser(userId).subscribeOn(Schedulers.io()).blockingGet().isNotEmpty()
     }
 
 

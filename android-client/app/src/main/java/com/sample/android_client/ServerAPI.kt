@@ -15,7 +15,14 @@ interface ServerAPI {
     fun fetchAllMessages(@Header("Token") token: String): Observable<List<MessageReceiver>>
   
     @POST("message/{userId}/{roomId}/{content}")
-    fun postNewMessage(@Path("userId") userId: Int, @Path("roomId") roomId: Int, @Path("content") content: String): Observable<Boolean>
+    fun postNewMessage(@Path("userId") userId: Int,
+                       @Path("roomId") roomId: Int,
+                       @Path("content") content: String): Observable<Boolean>
+
+    @POST("/user/{name}/{namedId}")
+    fun postUser(@Header("Token") token: String,
+                 @Path("name") name: String,
+                 @Path("namedId") namedId: String): Observable<UserReceiver>
 
     @GET("/user/NamedId")
     fun fetchUser(@Query("NamedId") namedId: String): Single<List<UserReceiver>>
@@ -27,6 +34,7 @@ class MessageReceiver(val type: String,
                       val roomId: Int,
                       val content: String,
                       @SerializedName("SendTime") val sendTime: Timestamp) {
+  
     fun toMessage(): Message {
         return Message(id, roomId, senderId, content, sendTime)
     }
@@ -36,6 +44,7 @@ class UserReceiver(val id: Int,
                    val name: String,
                    @SerializedName("uid") val uId: String,
                    @SerializedName("named_id") val namedId: String) {
+  
     fun toUser(): User {
         return User(id, name, namedId, 0, false)
     }
