@@ -10,6 +10,7 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_add_friends.*
 import kotlinx.android.synthetic.main.item_friend_friends.*
@@ -28,6 +29,8 @@ class AddFriendsActivity : AppCompatActivity() {
     private val selectedUsers = mutableListOf<SelectableUserItem>()  // 現在アプリ上で選択されているユーザ
     private val localUsers by lazy { loadLocalUsers() }
     private val database by lazy { DBHelper.getInstance(this).writableDatabase }
+
+    private val myId = 1
 
     private val serverAPI by lazy {
         Retrofit.Builder()
@@ -170,6 +173,7 @@ class AddFriendsActivity : AppCompatActivity() {
                 .flatMap { serverAPI.fetchUser(it.userNamedId).toObservable() }
                 .subscribe {
                     val user = it.first().toUser()
+                    createRoom(user)
                     println(user)
                     database.insert(USERS_TABLE_NAME,
                             "server_id" to user.serverId,
@@ -178,6 +182,41 @@ class AddFriendsActivity : AppCompatActivity() {
                             "icon_id" to user.iconId,
                             "is_friend" to 1)
                 }
+    }
+
+    private fun createRoom(user: User) {
+        var existRoom = false
+
+        fun insertRoomToServer() {
+            serverAPI.postRoom(" ", false)
+                    .doOnNext {
+                        serverAPI.postRoomInfo(user.serverId, it.id)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                        serverAPI.postRoomInfo(myId, it.id)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe()
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+        }
+
+        serverAPI.fetchRoomIdInclude(user.serverId)
+                .subscribeOn(Schedulers.io())
+                .flatMap { Observable.fromIterable(it) }
+                .flatMap { serverAPI.fetchUserIdBelong(it) }
+                .flatMap { Observable.fromIterable(it) }
+                .filter { it.id == myId }
+                .subscribeBy(
+                        onNext = {
+                            existRoom = true
+                        },
+                        onComplete = {
+                            if (!existRoom) {
+                                insertRoomToServer()
+                            }
+                        }
+                )
     }
 
     inner class SelectableUserItem(val userNamedId: String,
