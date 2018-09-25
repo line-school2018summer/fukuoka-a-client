@@ -42,8 +42,7 @@ class DBHelper(context: Context) : ManagedSQLiteOpenHelper(context, DATABASE_NAM
 
         db.createTable(MESSAGES_TABLE_NAME, true,
                 "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
-                // TODO server_idにUNIQUE制約をつける
-                "server_id" to INTEGER + NOT_NULL,
+                "server_id" to INTEGER + NOT_NULL + UNIQUE,
                 "room_id" to INTEGER + NOT_NULL,
                 "user_id" to INTEGER + NOT_NULL,
                 "body" to TEXT + NOT_NULL,
